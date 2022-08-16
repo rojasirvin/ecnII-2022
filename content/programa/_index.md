@@ -48,6 +48,7 @@ Unidad 3. Modelos de selección
 
 Unidad 4. Endogeneidad
 + Variables instrumentales
++ Método generalizado de momentos
 + Estimación con instrumentos débiles
 
 Unidad 5. Datos de panel
