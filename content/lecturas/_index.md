@@ -18,9 +18,8 @@ Las lecturas obligatorias (marcadas con “*”) permiten una discusión informa
 ## Semana 1
 
 * Introducción
-  + \* Angrist, J. D., & Pischke, J. S. (2017). Undergraduate Econometrics Instruction: Through Our Classes, Darkly. *Journal of Economic Perspectives*,31(2), 125-44.
-  + \* CT, Capítulo 4 (secciones 4.1 – 4.4)
-  + Nakamura, E., & Steinsson, J. (2018). Identification in macroeconomics. _Journal of Economic Perspectives_, 32(3), 59-86.
+  + Angrist, J. D., & Pischke, J. S. (2017). Undergraduate Econometrics Instruction: Through Our Classes, Darkly. *Journal of Economic Perspectives*,31(2), 125-44.
+  + \* Nakamura, E., & Steinsson, J. (2018). Identification in macroeconomics. _Journal of Economic Perspectives_, 32(3), 59-86.
   
 * MCO
   + CT, Capítulo 4 (secciones 4.1 a 4.3)
@@ -40,7 +39,7 @@ Las lecturas obligatorias (marcadas con “*”) permiten una discusión informa
 
 ## Semana 4
 * Variable dependiente binaria
-  + CT, Capítulos 14 (secciones 14.1 - 14.4)
+  + CT, Capítulo 14 (secciones 14.1 - 14.4)
   + **Binaria**: Avila-Foucat, V. S., & Pérez-Campuzano, E. (2015). Municipality socioeconomic characteristics and the probability of occurrence of Wildlife Management Units in Mexico. *Environmental Science & Policy*, 45, 146-153.
   + **Ordenados**: Conigliani, C., Manca, A., & Tancredi, A. (2015). Prediction of patient-reported outcome measures via multivariate ordered probit models. *Journal of the Royal Statistical Society*. Series A (Statistics in Society), 567-591.
 
@@ -122,7 +121,7 @@ Semana de examen parcial.
 * Panel con endogeneidad
   + CT, Capítulo 22 (secciones 22.1 - 22.5)
   + **Panel + VI**: Antman, F. M. (2011). The intergenerational effects of paternal migration on schooling and work: What can we learn from children's time allocations?. *Journal of Development Economics*, 96(2), 200-208.
-  + Wooldridge, J. (2012). Panel data models with heterogeneity and endogeneity. Institute for Fiscal Studies.
+  + \* Wooldridge, J. (2012). Panel data models with heterogeneity and endogeneity. Institute for Fiscal Studies.
   + \* Semykina, A., & Wooldridge, J. M. (2010). Estimating panel data models in the presence of endogeneity and selection. _Journal of Econometrics_, 157(2), 375-380.
 
 * Panel no lineal

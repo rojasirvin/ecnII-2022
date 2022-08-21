@@ -22,7 +22,6 @@ weight: 10
 El curso se basa en los siguientes textos:
 
 * Angrist, J.D. y Pischke, J.S. (2013). Mostly *Harmless Econometrics: An Empiricists Companion*. Princeton University Press.
-* Angrist, J.D. y Pischke, J.S. (2014). *Mastering 'Metrics: The Path from Cause to Effect*. Princeton University Press.
 * \* (CT) Cameron, A.C. y Trivedi, P.K. (2005). *Microeconometrics: Methods and applications*. Oxford University Press.
 *	Hayashi, F. (2000). *Econometrics*. Princeton University Press.
 *	\* (W) Wooldridge, J.M. (2010). *Econometric analysis of cross section and panel data*. Segunda edición, MIT Press.
