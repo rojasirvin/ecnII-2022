@@ -28,7 +28,7 @@ Horario de clases: martes y jueves (11:20 a 12:50).
 
 Horario de laboratorio: martes (15:00 a 16:30).
 
-Plataforma del curso: Microsoft Teams.
+Plataforma de comunicación: Microsoft Teams.
 
 Horario de oficina: por definir.
 
