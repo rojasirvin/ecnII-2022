@@ -11,14 +11,11 @@ Por favor, seleccione una de las lecturas marcadas con una "+" de la lista de le
 
 | **Autores** | **Tema** | **Presentador o presentadora** | **Fecha de exposición** |
 | --- | --- | --- | --- |
-| Avila-Foucat et al. (2015) | Binaria   |  |  |
-| Zou & Luo (2019) | Tobit |   |  |
-| Heckman (2017) | Heckman  |  |   |
-| López-Feldman & Chávez (2017) | VI |  |  |
-| Hackett & Márquez (2019) | VI |  |  |
-| Antman (2011) | Panel |  |  |
-| Bwalya (2006) | Panel |  | |
-| Kagin et al. (2016) | Panel |  |  |
-| Uña-Alvarez et al. (2003) | Riesgo |  |   |
-| Engelhardt & Kumar (2011) | Cuantil |  |   |
-| Li & Maddala (1999) | Bootstrap |  |  |
+| Avila-Foucat et al. (2015) | Binaria   | 4 de octubre |  
+| Zou & Luo (2019) | Tobit |   | 4 de octubre |
+| López-Feldman & Chávez (2017) | VI |  | 18 de octubre |
+ Hackett & Márquez (2019) | VI |  | 18  de octubre|
+| Bwalya (2006) | Panel |  | 3 de noviembre |
+| Kagin et al. (2016) | Panel |  | 3 de noviembre |
+| Engelhardt & Kumar (2011) | Cuantil |  |  24 de noviembre |
+| Hussinger (2008)| Semiparamétrico |  | 24 de noviembre |

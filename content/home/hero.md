@@ -34,4 +34,6 @@ Horario de oficina: por definir.
 
 <br>
 
-¡Bienvenidos! Este es un sitio para las y los estudiantes del curso de Econometría II de la Maestría en Economía del CIDE. Sin embargo, otras personas pueden encontrar útiles los recursos de este sitio, como el programa del curso, las tareas y la lista de lecturas.
+*¡Bienvenidas, bienvenidos!*
+
+Este es un sitio para las y los estudiantes del curso de Econometría II de la Maestría en Economía del CIDE. Sin embargo, otras personas pueden encontrar útiles los recursos de este sitio, como el programa del curso, las tareas y la lista de lecturas.
