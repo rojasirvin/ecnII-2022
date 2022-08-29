@@ -11,7 +11,7 @@ Por favor, seleccione una de las lecturas marcadas con una "+" de la lista de le
 
 | **Autores** | **Tema** | **Presentador o presentadora** | **Fecha de exposición** |
 | --- | --- | --- | --- |
-| Avila-Foucat et al. (2015) | Binaria   | 4 de octubre |  
+| Avila-Foucat et al. (2015) | Binaria  | | 4 de octubre |  
 | Zou & Luo (2019) | Tobit |   | 4 de octubre |
 | López-Feldman & Chávez (2017) | VI |  | 18 de octubre |
  Hackett & Márquez (2019) | VI |  | 18  de octubre|
