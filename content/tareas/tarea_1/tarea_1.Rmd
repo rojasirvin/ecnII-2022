@@ -44,7 +44,7 @@ a. [2 puntos] ¿Cuál es la media y la varianza del estimador de máxima verosim
 
 ## Pregunta 2
 
-En modelos de duración, que veremos más adelante en el curso, se emplea con frecuencia la distribución exponencial. Sean $D_1,D_2,\ldots,D_N$ variables aleatorias positivas e iid, con $D_i∼exp(\frac{1}{\theta})$, con $\theta>0$ y donde $\frac{1}{\theta} es conocido como el parámetro de escala$. La función de distribución de una exponencial es:
+En modelos de duración, que veremos más adelante en el curso, se emplea con frecuencia la distribución exponencial. Sean $D_1,D_2,\ldots,D_N$ variables aleatorias positivas e iid, con $D_i∼exp(\frac{1}{\theta})$, con $\theta>0$ y donde $\frac{1}{\theta}$ es conocido como el parámetro de escala. La función de distribución de una exponencial es:
 
 $$f(d_i│\theta)=\frac{1}{\theta} exp\left(-\frac{d_1}{\theta}\right)$$
 
