@@ -87,7 +87,7 @@ a. [3 puntos] Repita lo realizado en la parte b., ahora con $N=10$. Comente sobr
 
 a. [3 puntos] Repita lo realizado en la parte b., ahora con $N=10,000$. Comente sobre lo que observa.
 
-a. [5 puntos] ¿Cómo usaría este ejercicio con palabras simples a una persona que no sabe mucho de estadística sobre la importancia de los teoremas de límite central?
+a. [5 puntos] ¿Cómo usaría este ejercicio con palabras simples oara explicar a una persona que no sabe mucho de estadística sobre la importancia de los teoremas de límite central?
 
 
 
