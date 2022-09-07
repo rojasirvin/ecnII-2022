@@ -8,3 +8,96 @@ toc: false
 
 
 
+<div id="instrucciones" class="section level2">
+<h2>Instrucciones</h2>
+<p>Las tareas deben entregarse de manera individual, pero se recomienda ampliamente colaborar en grupos de estudio. Las tareas deberán entregarse en Teams antes de la fecha y hora señalada. No se aceptarán tareas fuera de tiempo. Por favor, no comprima los archivos en carpetas comprimidas. Las tareas deberán contener dos archivos:</p>
+<p>Un primer documento de respuestas donde se incluyan las respuestas a las preguntas teóricas y conceptuales. Este documento debe estar en formato pdf y debe ser generado usando un software de procesamiento de textos científicos, por ejemplo, usando los leguajes LaTeX o Markdown. En este documento también se deben incluir las respuestas a preguntas sobre conclusiones que se desprenden de las secciones prácticas. Por ejemplo, si una pregunta pide obtener la media de la variable x en cierta base de datos, entonces el documento de respuestas debe incluir la pregunta y respuesta correspondiente: “la media de la variable x es 32.6”. En este documento también deberán incluirse las tablas y gráficas que se soliciten.</p>
+<p>Un segundo archivo deberá contener el código replicable usado para generar los resultados de la sección práctica. El código debe también crear las tablas y gráficas solicitadas. Los archivos de código se verificarán para comprobar su replicabilidad de manera aleatoria.</p>
+</div>
+<div id="fecha-de-entrega" class="section level2">
+<h2>Fecha de entrega</h2>
+<p>Martes 20 de septiembre a las 20:00</p>
+</div>
+<div id="archivos" class="section level2">
+<h2>Archivos</h2>
+<p><a href="/tareas/tarea_1/grogger.csv">grogger.csv</a></p>
+</div>
+<div id="pregunta-1" class="section level2">
+<h2>Pregunta 1</h2>
+<p>Suponga que está interesado en una variable aleatoria que tiene una distribución Bernoulli con parámetro <span class="math inline">\(p\)</span>. La función de densidad está definida como:</p>
+<p><span class="math display">\[f(x_;p)=\left\{\begin{array} .1 &amp; \text{con probabilidad } p \\ 0 &amp; \text{con probabilidad } 1-p \end{array} \right.\]</span>
+Suponga que tiene una muestra de <span class="math inline">\(N\)</span> observaciones independientes e idénticamente distribuidas.</p>
+<ol style="list-style-type: lower-alpha">
+<li><p>[4 puntos] Plantee la función de log verosimilitud del problema.</p></li>
+<li><p>[4 puntos] Obtenga las condiciones de primer orden y resuelva para <span class="math inline">\(\hat{p}\)</span>.</p></li>
+<li><p>[2 puntos] ¿Cuál es la media y la varianza del estimador de máxima verosimilitud que ha encontrado?</p></li>
+</ol>
+</div>
+<div id="pregunta-2" class="section level2">
+<h2>Pregunta 2</h2>
+<p>En modelos de duración, que veremos más adelante en el curso, se emplea con frecuencia la distribución exponencial. Sean <span class="math inline">\(D_1,D_2,\ldots,D_N\)</span> variables aleatorias positivas e iid, con <span class="math inline">\(D_i∼exp(\frac{1}{\theta})\)</span>, con <span class="math inline">\(\theta&gt;0\)</span> y donde <span class="math inline">\(\frac{1}{\theta} es conocido como el parámetro de escala\)</span>. La función de distribución de una exponencial es:</p>
+<p><span class="math display">\[f(d_i│\theta)=\frac{1}{\theta} exp\left(-\frac{d_1}{\theta}\right)\]</span></p>
+<ol style="list-style-type: lower-alpha">
+<li><p>[2 puntos] Plantee la función de verosimilitud para la muestra de tamaño N.</p></li>
+<li><p>[2 puntos] Plantee la función de log verosimilitud.</p></li>
+<li><p>[2 puntos] Obtenga las condiciones de primer orden y encuentre el estimador de máxima verosimilitud para θ.</p></li>
+<li><p>[2 puntos] Compruebe que ha encontrado un máximo usando las condiciones de segundo orden.</p></li>
+<li><p>[2 puntos] Muestre que en este caso se cumple la igualdad de la matriz de información</p></li>
+</ol>
+</div>
+<div id="pregunta-3" class="section level2">
+<h2>Pregunta 3</h2>
+<p>Sea <span class="math inline">\(x_1\)</span> un vector de variables continuas, <span class="math inline">\(x_2\)</span> una variable continua y <span class="math inline">\(d_1\)</span> una variable dicotómica. Considere el siguiente modelo probit:
+<span class="math display">\[P(y=1│x_1,x_2 )=\Phi(x_1&#39;\alpha+\beta x_2+\gamma x_2^2 )\]</span></p>
+<ol style="list-style-type: lower-alpha">
+<li><p>[4 punto] Provea una expresión para el efecto marginal de <span class="math inline">\(x_2\)</span> en la probabilidad. ¿Cómo estimaría este efecto marginal?</p></li>
+<li><p>[4 punto] Considere ahora el modelo:
+<span class="math display">\[P(y=1│x_1  ,x_2 ,d_1)=\Phi(x_1 &#39;\delta+\pi x_2+\rho d_1+\nu x_2 d_1 )\]</span>
+Provea la nueva expresión para el efecto marginal de <span class="math inline">\(x_2\)</span>.</p></li>
+<li><p>[2 punto] En el modelo de la parte b., ¿cómo evaluaría el efecto de un cambio en <span class="math inline">\(d_1\)</span> en la probabilidad? Provea una expresión para este efecto.</p></li>
+</ol>
+</div>
+<div id="pregunta-4" class="section level2">
+<h2>Pregunta 4</h2>
+<p>En esta pregunta mostraremos el poder de los teoremas del límite central. Para esto, generaremos muchas muestras de tamaño <span class="math inline">\(N\)</span> con una distribución <span class="math inline">\(\chi^2\)</span> con un grado de libertad (una distribución nada normal). Recuerde que cuando realice simulaciones, siempre debe fijar una semilla al inicio para poder replicar su trabajo.</p>
+<ol style="list-style-type: lower-alpha">
+<li><p>[2 puntos] ¿Cuál es la media y la varianza de una variable aleatoria <span class="math inline">\(y_i\sim \chi^2(1)\)</span>?</p></li>
+<li><p>[2 puntos] Si <span class="math inline">\(y_i\)</span> son iid y podemos aplicar un teorema de límite central, ¿cuál es la distribución teórica de <span class="math inline">\(\bar{y}\)</span> cuando <span class="math inline">\(N\to\infty\)</span>?</p></li>
+<li><p>[5 puntos] Realice el siguiente procedimiento <span class="math inline">\(J=10,000\)</span> veces. Obtenga una muestra de tamaño <span class="math inline">\(N=2\)</span> a partir de la distribución <span class="math inline">\(\chi^2(1)\)</span> y calcule la media muestral <span class="math inline">\(\bar{y}\)</span>. Coleccione las <span class="math inline">\(J\)</span> medias muestrales y luego grafique un histograma de las medias muestrales obtenidas junto con una curva teórica normal con la media y varianza obtenida en la parte b. Comente sobre lo que observa.</p></li>
+<li><p>[3 puntos] Repita lo realizado en la parte b., ahora con <span class="math inline">\(N=10\)</span>. Comente sobre lo que observa.</p></li>
+<li><p>[3 puntos] Repita lo realizado en la parte b., ahora con <span class="math inline">\(N=10,000\)</span>. Comente sobre lo que observa.</p></li>
+<li><p>[5 puntos] ¿Cómo usaría este ejercicio con palabras simples a una persona que no sabe mucho de estadística sobre la importancia de los teoremas de límite central?</p></li>
+</ol>
+</div>
+<div id="pregunta-5-cameron-trivedi-2005" class="section level2">
+<h2>Pregunta 5 (Cameron &amp; Trivedi, 2005)</h2>
+<p>En esta pregunta comparará el estimador de MCO, de MV y de MCNL. Antes de comenzar, recuerde fijar una semilla para poder replicar sus cálculos. Se recomienda repasar la sección 5.9 en CT.</p>
+<p>Cameron y Trivedi proveen pistas para replicar esta tabla <a href="http://cameron.econ.ucdavis.edu/mmabook/mma05p1mle.do">aquí</a> y <a href="http://cameron.econ.ucdavis.edu/mmabook/mma05p2nls.do">aquí</a>, aunque ellos trabajan en Stata. La idea es entender la <em>anatomía</em> de los distintos estimadores estudiados en clase.</p>
+<ol style="list-style-type: lower-alpha">
+<li><p>[2 puntos] Genere una muestra de 10,000 observaciones llamadas <span class="math inline">\(x\)</span> tales que <span class="math inline">\(x\sim\mathcal{N}(1,1)\)</span>. Posteriormente, genere <span class="math inline">\(\lambda=exp(\beta_1+\beta_2x)\)</span>, donde <span class="math inline">\((\beta_1\;\beta_2)=(2\;-1)\)</span>. Finalmente, genere <span class="math inline">\(y|\mathbf{x} \sim exponencial(\lambda)\)</span>. Es decir, el proceso generador de datos es: <span class="math display">\[\begin{aligned}y|\mathbf{x} \sim exponencial(\lambda) \\ \lambda=exp(\beta_1+\beta_2x)\end{aligned} \]</span> Note que <span class="math inline">\(1/\lambda\)</span> es conocida como la tasa en la distribución exponencial. En R, <em>rexp</em> requiere especificar como parámetro a la tasa en lugar de <span class="math inline">\(\lambda\)</span>.</p></li>
+<li><p>[2 puntos] Reporte una tabla con la media, la desviación estándar, el mínimo y el máximo de <span class="math inline">\(x\)</span>, <span class="math inline">\(\lambda\)</span> y <span class="math inline">\(y\)</span>.</p></li>
+<li><p>[2 puntos] Reporte una gráfica donde muestre la relación entre <span class="math inline">\(x\)</span> y <span class="math inline">\(\lambda\)</span> en el plano <span class="math inline">\((x,\lambda)\)</span>. Realice otra gráfica similar, ahora para <span class="math inline">\((x,1/\lambda)\)</span>.</p></li>
+<li><p>[2 puntos] Estime por MCO una regresión entre <span class="math inline">\(y\)</span> y <span class="math inline">\(x\)</span>. Deberá obtener coeficientes parecidos a los de la primera columna de la Tabla 5.7 en CT.</p></li>
+<li><p>[1 punto] ¿Por qué difieren los coeficientes que obtuvo y los que se presentan en la Tabla 5.7 de CT?</p></li>
+<li><p>[2 puntos] Obtenga los errores robustos. En R, una librería que será muy útil es <em>sandwich</em>.</p></li>
+<li><p>[1 punto] ¿El estimador de MCO es consistente? ¿Por qué?</p></li>
+<li><p>[2 puntos] Plantee la función de log verosimilitud.</p></li>
+<li><p>[4 puntos] Obtenga el estimador de máxima verosimilitud de <span class="math inline">\(\beta_1\)</span> y <span class="math inline">\(\beta_2\)</span> obteniendo la solución al negativo del problema de log verosimilitud. En R, puede emplear, por ejemplo <em>nlm</em>.</p></li>
+<li><p>[3 puntos] Usando la matriz hesiana obtenida en la solución del problema de optimización, encuentre los errores estándar robustos de los coeficientes estimados.</p></li>
+<li><p>[4 puntos] El modelo antes descrito puede expresarse como una regresión no lineal de la forma <span class="math inline">\(y=exp(-x&#39;\beta)+u\)</span>. Encuentre la solución para <span class="math inline">\(\beta_1\)</span> y <span class="math inline">\(\beta_2\)</span>. Reporte los errores estándar no robustos. ¿Son consistentes estos errores? ¿Por qué?</p></li>
+<li><p>[3 puntos] Ahora implementará la matriz de varianzas y covarianzas robusta en la ecuación 5.81 de CT. Dé una expresión para <span class="math inline">\(\hat{D}\)</span> en este problema.</p></li>
+<li><p>[3 puntos] Calcule el error estándar robusto definido como en la ecuación 5.81. En este caso <span class="math inline">\(\hat{\Omega}=Diag(\hat{u}_i^2)\)</span>.</p></li>
+<li><p>[3 puntos] Calcule una versión alternativa de errores estándar (entre corchetes en Tabla 5.7), esta vez con <span class="math inline">\(\hat{\Omega}=Diag((exp(-x_i&#39;\beta))^2)\)</span>.</p></li>
+<li><p>[1 puntos] En este experimento, ¿qué estimador tiene las mejores propiedades?</p></li>
+</ol>
+</div>
+<div id="pregunta-6" class="section level2">
+<h2>Pregunta 6</h2>
+<p>Use la base <em>grogger.csv</em> para esta pregunta. Esta base contiene información sobre arrestos y características socioeconómicas de individuos arrestados.
+a. [3 puntos] Estime un modelo de probabilidad lineal que relacione <strong>arr86</strong> (haber si arrestado al menos una vez en 1986) con <strong>pcnv</strong>, <strong>avgsen</strong>, <strong>tottime</strong>, <strong>ptime86</strong>, <strong>inc86</strong>, <strong>black</strong>, <strong>hispan</strong> y <strong>born60</strong>. Reporte los errores que asumen homocedasticidad y los errores robustos a heteroscedasticidad.</p>
+<ol style="list-style-type: lower-alpha">
+<li><p>[3 puntos] ¿Cuál es el efecto en la probabilidad de arresto si <strong>pcnv</strong> pasa de 0.25 a 0.75?</p></li>
+<li><p>[4 puntos] Realice una prueba de significancia conjunta de <strong>avgsen</strong> y <strong>tottime</strong>. ¿Qué concluye?</p></li>
+<li><p>[5 puntos] Estime un modelo probit relacionando las mismas variables. ¿Cuál es el efecto en la probabilidad de arresto cuando <strong>pcnv</strong> pasa de 0.25 a 0.75 para los valores promedio de <strong>avgsen</strong>, <strong>tottime</strong>, <strong>inc86</strong> y <strong>ptime86</strong> y cuando los individuos son de raza negra, no hispánicos y nacidos en 1960 (<strong>born60</strong> igual a 1). ¿Cómo se comparan estos resultados con lo que encontró con el modelo de probabilidad lineal?</p></li>
+</ol>
+</div>
