@@ -1,0 +1,440 @@
+---
+title: "Respuestas a la tarea 1"
+summary: " "
+weight: 2
+type: book
+toc: false
+---
+
+
+
+<div id="pregunta-1" class="section level2">
+<h2>Pregunta 1</h2>
+<p>Suponga que está interesado en una variable aleatoria que tiene una distribución Bernoulli con parámetro <span class="math inline">\(p\)</span>. La función de densidad está definida como:</p>
+<p><span class="math display">\[f(x_;p)=\left\{\begin{array} .1 &amp; \text{con probabilidad } p \\ 0 &amp; \text{con probabilidad } 1-p \end{array} \right.\]</span>
+Suponga que tiene una muestra de <span class="math inline">\(N\)</span> observaciones independientes e idénticamente distribuidas.</p>
+<ol style="list-style-type: lower-alpha">
+<li><p>[4 puntos] Plantee la función de log verosimilitud del problema.</p>
+<p><em>Noten que podemos escribir la función de densidad para la <span class="math inline">\(i\)</span>-ésima observación como</em> <span class="math display">\[f(x_i;p)=p^{x_i}(1-p)^{(1-x_i)}\]</span></p>
+<p><em>Por tanto, la función de verosimilitud es</em></p>
+<p><span class="math display">\[L_N(p)=\prod_{i=1}^N f(x;p)=\prod_{i=1}^N p^{x_i}(1-p)^{(1-x_i)} = p^{\sum_{i=1}^N x_i}(1-p)^{N-\sum_{i=1}^N x_i}\]</span></p>
+<p><em>Y la función de log verosimilitud será:</em></p>
+<p><span class="math display">\[\mathcal{L_N(p)}=\ln{L_N(p)}=\sum x_i \ln(p)-(N-\sum x_i)\ln(1-p)\]</span></p></li>
+<li><p>[4 puntos] Obtenga las condiciones de primer orden y resuelva para <span class="math inline">\(\hat{p}\)</span>.</p>
+<p><em>Derivando <span class="math inline">\(\mathcal{L}_N\)</span> con respecto a <span class="math inline">\(p\)</span> obtenemos la condición de primer orden</em>:</p>
+<p><span class="math display">\[\frac{d\mathcal{L}_N(p)}{d p}=\frac{\sum x_i}{p}-\frac{n-\sum x_i}{1-p}=0\]</span></p>
+<p><em>Y resolviendo, obtenemos el estimador de máxima verosimilitud <span class="math display">\[\hat{p}_{MV}=\bar{x}\]</span> es decir, la media muestral</em></p></li>
+<li><p>[2 puntos] ¿Cuál es la media y la varianza del estimador de máxima verosimilitud que ha encontrado?</p>
+<p><em>Obtenemos directamente la esperanza</em> <span class="math display">\[E(\hat{p}_{MV})=E(\bar{x})=\frac{1}{N}E\left(\sum x_i\right)=\frac{1}{n}n p=p\]</span></p>
+<p><em>Mientras que la varianza es</em> <span class="math display">\[V(\hat{p}_{MV})=\frac{1}{N^2}V\left(\sum x_i\right)=\frac{p(1-p)}{n}\]</span></p></li>
+</ol>
+</div>
+<div id="pregunta-2" class="section level2">
+<h2>Pregunta 2</h2>
+<p>En modelos de duración, que veremos más adelante en el curso, se emplea con frecuencia la distribución exponencial. Sean <span class="math inline">\(D_1,D_2,\ldots,D_N\)</span> variables aleatorias positivas e iid, con <span class="math inline">\(D_i∼exp(\frac{1}{\theta})\)</span>, con <span class="math inline">\(\theta&gt;0\)</span> y donde <span class="math inline">\(\frac{1}{\theta}\)</span> es conocido como el parámetro de escala. La función de distribución de una exponencial es:</p>
+<p><span class="math display">\[f(d_i│\theta)=\frac{1}{\theta} exp\left(-\frac{d_1}{\theta}\right)\]</span></p>
+<ol style="list-style-type: lower-alpha">
+<li><p>[2 puntos] Plantee la función de verosimilitud para la muestra de tamaño N.</p>
+<p><em>La función de verosimilitud, dado iid, es:</em></p>
+<p><span class="math display">\[L(\theta)=\prod_i f(d_i|\theta)=\prod_i \left(\frac{1}{\theta} exp\left(-\frac{d_i}{\theta}\right)\right)=\frac{1}{\theta^N}exp\left(-\frac{\sum_i d_i}{\theta}\right)\]</span></p></li>
+<li><p>[2 puntos] Plantee la función de log verosimilitud.</p>
+<p><em>Calculando el log:</em></p>
+<p><span class="math display">\[\mathcal{L}(\theta)=\ln(L(\theta))=-N \ln(\theta)-\frac{\sum_i d_i}{\theta}\]</span></p></li>
+<li><p>[2 puntos] Obtenga las condiciones de primer orden y encuentre el estimador de máxima verosimilitud para .</p>
+<p><em>Derivando con respecto a <span class="math inline">\(\theta\)</span></em>:</p>
+<p><span class="math display">\[\frac{\partial \mathcal{L}(\theta)}{\partial \theta}=-\frac{N}{\theta}-\left(\frac{-\sum_i d_i}{\theta^2}\right)=-\frac{N}{\theta}+\left(\frac{\sum_i d_i}{\theta^2}\right)=0\]</span>
+<em>Resolviendo para <span class="math inline">\(\theta_{MV}\)</span>:</em></p>
+<p><span class="math display">\[\hat{\theta}_{MV}=\frac{\sum d_i}{N}=\bar{d}\]</span></p></li>
+<li><p>[2 puntos] Compruebe que ha encontrado un máximo usando las condiciones de segundo orden.</p>
+<p><em>Derivando nuevamente con respecto a <span class="math inline">\(\theta\)</span> encontramos que:</em></p>
+<p><span class="math display">\[\frac{\partial^2 \mathcal{L}(\theta)}{\partial \theta^2}=\frac{N}{\theta^2}-\frac{2N\bar{d}}{\theta^3}\]</span>
+<em>Evaluado en el óptimo, <span class="math inline">\(\frac{\partial^2 \mathcal{L}(\theta)}{\partial \theta^2}=-\frac{N}{\bar{d}^2}&lt;0\)</span>. Por lo que el punto encontrado es un máximo.</em></p></li>
+<li><p>[2 puntos] Muestre que en este caso se cumple la igualdad de la matriz de información</p>
+<p><em>La igualdad de la matriz de información implica que <span class="math inline">\(-E(H(d_i,\theta))=E(s(d_i,\theta)^2)\)</span>. Es mucho más fácil trabajar con la <span class="math inline">\(i\)</span>ésima observación. Para esta observación, la log verosimilitud está dada por:</em></p>
+<p><span class="math display">\[\ln f_i(d_i|\theta)=-\ln(\theta)-\frac{d_i}{\theta}\]</span></p>
+<p><em>El score será:</em></p>
+<p><span class="math display">\[s(\theta)=-\frac{1}{\theta}+\frac{d_i}{\theta^2}\]</span>
+<em>Y al cuadrado:</em></p>
+<p><span class="math display">\[s(\theta)^2=\frac{1}{\theta^2}-\frac{2d_i}{\theta^3}+\frac{d_i^2}{\theta^4}\]</span></p>
+<p><em>El valor esperado, dado que <span class="math inline">\(E(d_i)=\theta\)</span>:</em></p>
+<p><span class="math display">\[E(s(\theta)^2)=\frac{1}{\theta^2}-\frac{2\theta}{\theta^3}+\frac{E(d_i 2)}{\theta^4}\]</span>
+<em>La varianza en la exponencial es <span class="math inline">\(V(d_i)=\theta^2=E(d_i^2)-\theta^2\)</span>, por definición. Entonces, <span class="math inline">\(E(d_i^2)=V(d_i)+\theta^2=2\theta^2\)</span>. Sustituyendo:</em></p>
+<p><span class="math display">\[E(s(\theta)^2)=\frac{1}{\theta^2}-\frac{2\theta}{\theta^3}+\frac{2\theta^2}{\theta^4}=\frac{1}{\theta^2}\]</span></p>
+<p><em>Ahora, basta calcular <span class="math inline">\(E\left(\frac{\partial^2 \mathcal{L}(\theta)}{\partial \theta^2}\right)\)</span>:</em></p>
+<p><span class="math display">\[E\left(\frac{\partial^2 \mathcal{L}(\theta)}{\partial \theta^2}\right)=E\left(\frac{N}{\theta^2}-\frac{2N\bar{d}}{\theta^3}\right)=\frac{N}{\theta^2}-\frac{2N\theta}{\theta^3}=\frac{N}{\theta^2}\]</span>
+<em>Para la <span class="math inline">\(i\)</span>ésima observación, <span class="math inline">\(E\left(\frac{\partial^2 \mathcal{l}_i(\theta)}{\partial \theta^2}\right)=\frac{1}{\theta^2}\)</span>. Y la igualdad se cumple.</em></p></li>
+</ol>
+</div>
+<div id="pregunta-3" class="section level2">
+<h2>Pregunta 3</h2>
+<p>Sea <span class="math inline">\(x_1\)</span> un vector de variables continuas, <span class="math inline">\(x_2\)</span> una variable continua y <span class="math inline">\(d_1\)</span> una variable dicotómica. Considere el siguiente modelo probit:
+<span class="math display">\[P(y=1│x_1,x_2 )=\Phi(x_1&#39;\alpha+\beta x_2+\gamma x_2^2 )\]</span></p>
+<ol style="list-style-type: lower-alpha">
+<li><p>[4 punto] Provea una expresión para el efecto marginal de <span class="math inline">\(x_2\)</span> en la probabilidad. ¿Cómo estimaría este efecto marginal?</p>
+<p><em>El efecto marginal de interés es</em>: <span class="math display">\[\frac{\partial P(y=1|x_1,x_2)}{\partial x_2}=\phi(x_1\alpha+\beta x_2+\gamma x_2^2)(\beta+2\gamma x_2)\]</span> <em>Para estimarlo, usamos un modelo probit para obtener estimadores consistentes de <span class="math inline">\(\alpha\)</span>, <span class="math inline">\(\beta\)</span> y <span class="math inline">\(\gamma\)</span> y empleamos software para evaluar valores relevantes de <span class="math inline">\(x_1\)</span> y <span class="math inline">\(x_2\)</span> (por ejemplo, los promedios) en la función de distribución <span class="math inline">\(\phi\)</span>.</em></p></li>
+<li><p>[4 punto] Considere ahora el modelo:
+<span class="math display">\[P(y=1│x_1  ,x_2 ,d_1)=\Phi(x_1 &#39;\delta+\pi x_2+\rho d_1+\nu x_2 d_1 )\]</span>
+Provea la nueva expresión para el efecto marginal de <span class="math inline">\(x_2\)</span>.</p>
+<p><em>El efecto marginal es:</em> <span class="math display">\[\frac{\partial P(y=1|x_1,x_2)}{\partial x_2}=\phi(x_1\delta+\pi x_2+\rho d_1+  \nu x_2d_1)(\pi+\nu d_1)\]</span></p></li>
+<li><p>[2 punto] En el modelo de la parte b., ¿cómo evaluaría el efecto de un cambio en <span class="math inline">\(d_1\)</span> en la probabilidad? Provea una expresión para este efecto.</p>
+<p><em>Dado que <span class="math inline">\(d_1\)</span> es una variable dicotómica, el efecto de <span class="math inline">\(d_1\)</span> se mide como la diferencia en probabilidad cuando <span class="math inline">\(d_1=1\)</span> y cuando <span class="math inline">\(d_1=0\)</span></em>: <span class="math display">\[P(y=1|x_1,x_2,d_1=1)-P(y=1|x_1,x_2,d_1=0)=\phi(x_1\delta+(\pi+\nu)x_2+\rho)-\phi(x_1\delta+\pi x_2)\]</span></p></li>
+</ol>
+</div>
+<div id="pregunta-4" class="section level2">
+<h2>Pregunta 4</h2>
+<p>En esta pregunta mostraremos el poder de los teoremas del límite central. Para esto, generaremos muchas muestras de tamaño <span class="math inline">\(N\)</span> con una distribución <span class="math inline">\(\chi^2\)</span> con un grado de libertad (una distribución nada normal). Recuerde que cuando realice simulaciones, siempre debe fijar una semilla al inicio para poder replicar su trabajo.</p>
+<ol style="list-style-type: lower-alpha">
+<li><p>[2 puntos] ¿Cuál es la media y la varianza de una variable aleatoria <span class="math inline">\(y_i\sim \chi^2(1)\)</span>?</p>
+<p><em>Para una variable que se distribuye <span class="math inline">\(\chi^2(\nu)\)</span>, la media es <span class="math inline">\(\nu\)</span> y la varianza es <span class="math inline">\(2\nu\)</span>. Para este caso, <span class="math inline">\(E(y_i)=1\)</span> y <span class="math inline">\(V(y_i)=2\)</span></em></p></li>
+<li><p>[2 puntos] Si <span class="math inline">\(y_i\)</span> son iid y podemos aplicar un teorema de límite central, ¿cuál es la distribución teórica de <span class="math inline">\(\bar{y}\)</span> cuando <span class="math inline">\(N\to\infty\)</span>?</p>
+<p><em>Obtenemos el valor esperado y la varianza de <span class="math inline">\(\bar{y}\)</span>:</em></p>
+<p><em><span class="math display">\[E(\bar{y})=\frac{1}{N}E(\sum_i y_i)  = E(y_i)=\nu\]</span></em></p>
+<p><em><span class="math display">\[V(\bar{y})=\frac{1}{N^2}V(\sum_i y_i) = \frac{1}{N}V(y_i)=\frac{2\nu}{N}\]</span></em></p>
+<p>Entonces, un TLC nos daría las condiciones para que:</p>
+<p><em><span class="math inline">\(\bar{y}\sim\mathcal{N}(1,2/N)\)</span></em></p></li>
+<li><p>[5 puntos] Realice el siguiente procedimiento <span class="math inline">\(J=10,000\)</span> veces. Obtenga una muestra de tamaño <span class="math inline">\(N=2\)</span> a partir de la distribución <span class="math inline">\(\chi^2(1)\)</span> y calcule la media muestral <span class="math inline">\(\bar{y}\)</span>. Coleccione las <span class="math inline">\(J\)</span> medias muestrales y luego grafique un histograma de las medias muestrales obtenidas junto con una curva teórica normal con la media y varianza obtenida en la parte b. Comente sobre lo que observa.</p>
+<pre class="r"><code>set.seed(820)
+reps &lt;- 10000
+n &lt;- 2
+nu &lt;- 1
+mu &lt;- nu
+v &lt;- 2*nu/n
+
+ymedias2 &lt;- numeric(reps)
+for (i in 1:reps){
+ sample&lt;-rchisq(n,nu)
+ ymedias2[i]&lt;-mean(sample)
+}</code></pre>
+<p><em>Graficamos junto con una densidad <span class="math inline">\(N(1,2/2)\)</span>:</em></p>
+<pre class="r"><code>hist(ymedias2, breaks=20, prob=TRUE, 
+ xlab=&quot;Medias&quot;, ylim=c(0, 2), xlim=c(0, 2))
+curve(dnorm(x, mean=mu, sd=sqrt(v)), 
+  col=&quot;darkblue&quot;, lwd=2, add=TRUE, yaxt=&quot;n&quot;)</code></pre>
+<p><img src="/tareas/tarea_1/tarea_1_respuestas_files/figure-html/unnamed-chunk-2-1.png" width="384" style="display: block; margin: auto;" />
+<em>El histograma no se parece nada a la curva normal.</em></p></li>
+<li><p>[3 puntos] Repita lo realizado en la parte b., ahora con <span class="math inline">\(N=10\)</span>. Comente sobre lo que observa.</p>
+<pre class="r"><code>reps &lt;- 10000
+n &lt;- 10
+nu &lt;- 1
+mu &lt;- nu
+v &lt;- 2*nu/n
+
+ymedias10 &lt;- numeric(reps)
+for (i in 1:reps){
+ sample&lt;-rchisq(n,nu)
+ ymedias10[i]&lt;-mean(sample)
+}</code></pre>
+<p><em>Graficamos junto con una densidad <span class="math inline">\(N(1,2/10)\)</span>:</em></p>
+<pre class="r"><code>hist(ymedias10, breaks=20, prob=TRUE, 
+ xlab=&quot;Medias&quot;, ylim=c(0, 2), xlim=c(0, 2))
+curve(dnorm(x, mean=mu, sd=sqrt(v)), 
+  col=&quot;darkblue&quot;, lwd=2, add=TRUE, yaxt=&quot;n&quot;)</code></pre>
+<p><img src="/tareas/tarea_1/tarea_1_respuestas_files/figure-html/unnamed-chunk-4-1.png" width="384" style="display: block; margin: auto;" />
+<em>El histograma comienza a tener una forma normal. De hecho, se parece ya bastante.</em></p></li>
+<li><p>[3 puntos] Repita lo realizado en la parte b., ahora con <span class="math inline">\(N=10,000\)</span>. Comente sobre lo que observa.</p>
+<pre class="r"><code>reps &lt;- 10000
+n &lt;- 10000
+nu &lt;- 1
+mu &lt;- nu
+v &lt;- 2*nu/n
+
+ymedias10000 &lt;- numeric(reps)
+for (i in 1:reps){
+ sample&lt;-rchisq(n,nu)
+ ymedias10000[i]&lt;-mean(sample)
+}</code></pre>
+<p><em>Graficamos junto con una densidad <span class="math inline">\(N(1,2/10000)\)</span>:</em></p>
+<pre class="r"><code>hist(ymedias10000, breaks=20, prob=TRUE, 
+ xlab=&quot;Medias&quot;, ylim=c(0, 20), xlim=c(0, 2))
+curve(dnorm(x, mean=mu, sd=sqrt(v)), 
+  col=&quot;darkblue&quot;, lwd=2, add=TRUE, yaxt=&quot;n&quot;)</code></pre>
+<p><img src="/tareas/tarea_1/tarea_1_respuestas_files/figure-html/unnamed-chunk-6-1.png" width="384" style="display: block; margin: auto;" />
+<em>El histograma se parece ya a la curva normal teórica, con una varianza muy pequeña, con la gran mayoría de las medias concentradas muy cerca del valor esperado.</em></p></li>
+<li><p>[5 puntos] ¿Cómo usaría este ejercicio con palabras simples oara explicar a una persona que no sabe mucho de estadística sobre la importancia de los teoremas de límite central?</p>
+<p><em>Un TLC nos permite hacer afirmaciones sobre la distribución de un estadístico. Un estadístico es un resumen de los datos, por lo que nos interesa usar dichos estadísticos para describir características de los fenómenos que estudiamos usando datos. Queremos saber cosas como lo que esperamos en promedio que suceda con una variable, o qué tanta variabilidad dicha variable tendrá en la población. Con un TLC podemos hacer afirmaciones sobre cómo lucen promedios muestrales de la variable que estudiamos cuando tenemos suficientes observaciones. Nos dice en particular que va a tener una distribución normal.</em></p></li>
+</ol>
+</div>
+<div id="pregunta-5-cameron-trivedi-2005" class="section level2">
+<h2>Pregunta 5 (Cameron &amp; Trivedi, 2005)</h2>
+<p>En esta pregunta comparará el estimador de MCO, de MV y de MCNL. Antes de comenzar, recuerde fijar una semilla para poder replicar sus cálculos. Se recomienda repasar la sección 5.9 en CT.</p>
+<p>Cameron y Trivedi proveen pistas para replicar esta tabla <a href="http://cameron.econ.ucdavis.edu/mmabook/mma05p1mle.do">aquí</a> y <a href="http://cameron.econ.ucdavis.edu/mmabook/mma05p2nls.do">aquí</a>, aunque ellos trabajan en Stata. La idea es entender la <em>anatomía</em> de los distintos estimadores estudiados en clase.</p>
+<ol style="list-style-type: lower-alpha">
+<li>[2 puntos] Genere una muestra de 10,000 observaciones llamadas <span class="math inline">\(x\)</span> tales que <span class="math inline">\(x\sim\mathcal{N}(1,1)\)</span>. Posteriormente, genere <span class="math inline">\(\lambda=exp(\beta_1+\beta_2x)\)</span>, donde <span class="math inline">\((\beta_1\;\beta_2)=(2\;-1)\)</span>. Finalmente, genere <span class="math inline">\(y|\mathbf{x} \sim exponencial(\lambda)\)</span>. Es decir, el proceso generador de datos es: <span class="math display">\[\begin{aligned}y|\mathbf{x} \sim exponencial(\lambda) \\ \lambda=exp(\beta_1+\beta_2x)\end{aligned} \]</span> Note que <span class="math inline">\(1/\lambda\)</span> es conocida como la tasa en la distribución exponencial. En R, <em>rexp</em> requiere especificar como parámetro a la tasa en lugar de <span class="math inline">\(\lambda\)</span>.</li>
+</ol>
+<p><span class="math display">\[
+\begin{aligned}
+y|\mathbf{x} \sim exponencial(\lambda) \\
+\lambda=exp(\beta_1+\beta_2x)
+\end{aligned}
+\]</span></p>
+<pre><code>```r
+set.seed(820)
+# Here a = 2, b = -1  and  x ~ N[1, 1]
+a &lt;- 2
+b &lt;- -1
+mux &lt;- 1
+sigx &lt;- 1
+obs &lt;- 10000
+
+
+x &lt;- rnorm(obs,mux,sigx)
+lambda &lt;- exp(a+b*x)
+Ey=1/lambda
+
+#Generar y
+y &lt;- (1/lambda)*rexp(1/lambda)
+```</code></pre>
+<ol style="list-style-type: lower-alpha">
+<li><p>[2 puntos] Reporte una tabla con la media, la desviación estándar, el mínimo y el máximo de <span class="math inline">\(x\)</span>, <span class="math inline">\(\lambda\)</span> y <span class="math inline">\(y\)</span>.</p>
+<p><em>Aquí usé la función stat.desc de la librería pastecs:</em></p>
+<pre class="r"><code>#Obtener descriptiva
+descriptiva&lt;-cbind(x,lambda,y)
+stat.desc(descriptiva)
+##                          x       lambda            y
+## nbr.val       1.000000e+04 1.000000e+04 1.000000e+04
+## nbr.null      0.000000e+00 0.000000e+00 0.000000e+00
+## nbr.na        0.000000e+00 0.000000e+00 0.000000e+00
+## min          -2.651393e+00 5.846575e-02 3.372353e-05
+## max           4.839314e+00 1.047308e+02 2.406148e+01
+## range         7.490707e+00 1.046723e+02 2.406144e+01
+## sum           9.939838e+03 4.509838e+04 5.947033e+03
+## median        9.937037e-01 2.735451e+00 2.357482e-01
+## mean          9.939838e-01 4.509838e+00 5.947033e-01
+## SE.mean       1.001648e-02 5.893218e-02 1.159207e-02
+## CI.mean.0.95  1.963431e-02 1.155189e-01 2.272278e-02
+## var           1.003298e+00 3.473002e+01 1.343760e+00
+## std.dev       1.001648e+00 5.893218e+00 1.159207e+00
+## coef.var      1.007710e+00 1.306747e+00 1.949219e+00</code></pre></li>
+<li><p>[2 puntos] Reporte una gráfica donde muestre la relación entre <span class="math inline">\(x\)</span> y <span class="math inline">\(\lambda\)</span> en el plano <span class="math inline">\((x,\lambda)\)</span>. Realice otra gráfica similar, ahora para <span class="math inline">\((x,1/\lambda)\)</span>.</p>
+<p><em><span class="math inline">\(\lambda\)</span> es decreciente en <span class="math inline">\(x\)</span></em>:</p>
+<pre class="r"><code>plot(x,lambda)</code></pre>
+<p><img src="/tareas/tarea_1/tarea_1_respuestas_files/figure-html/unnamed-chunk-9-1.png" width="672" />
+<em>por lo que <span class="math inline">\(1/\lambda\)</span> es creciente en <span class="math inline">\(x\)</span>:</em></p>
+<pre class="r"><code>#Obtener descriptiva
+plot(x,Ey)</code></pre>
+<p><img src="/tareas/tarea_1/tarea_1_respuestas_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p></li>
+<li><p>[2 puntos] Estime por MCO una regresión entre <span class="math inline">\(y\)</span> y <span class="math inline">\(x\)</span>. Deberá obtener coeficientes parecidos a los de la primera columna de la Tabla 5.7 en CT.</p>
+<p><em>Estimando por MCO y obteniendo los errores que asumen homocedasticidad:</em></p>
+<pre class="r"><code>obs &lt;- 10000
+X &lt;- cbind(rep(1,10000),x)
+
+##MCO
+b_mco &lt;- solve(t(X)%*%X)%*%t(X)%*%y
+b_mco
+##         [,1]
+##   0.01936736
+## x 0.57881822
+
+##MCO, errores de mínimos cuadrados
+uhat_mco &lt;- y-b_mco[1]-b_mco[2]*x
+s2_mco &lt;- as.numeric(t(uhat_mco)%*%uhat_mco/(obs-2))
+
+V_mco &lt;- s2_mco*solve(t(X)%*%X)
+sqrt(diag(V_mco))*obs/(obs-2)
+##                     x 
+## 0.01414563 0.01002455</code></pre></li>
+<li><p>[1 punto] ¿Por qué difieren los coeficientes que obtuvo y los que se presentan en la Tabla 5.7 de CT?</p>
+<p><em>Los errores son distintos a los presentados en la tabla del libro porque la muestra con la que trabajamos es distinta. Aunque el proceso generador de datos es el mismo, la muestra que tenemos a la mano es una realización de dicho proces.</em></p></li>
+<li><p>[2 puntos] Obtenga los errores robustos. En R, una librería que será muy útil es <em>sandwich</em>.</p>
+<pre class="r"><code>##MCO, errores de White se puede obtener como un caso particular de la ecuación 5.77 en CT
+Omegahat_White &lt;- diag(uhat_mco^2)
+V_mco_White &lt;- solve(t(X)%*%X)%*%t(X)%*%Omegahat_White%*%X%*% solve(t(X)%*%X)
+sqrt(diag(V_mco_White))*obs/(obs-2)
+##                     x 
+## 0.01347206 0.02073000</code></pre>
+<p><em>La función vcoHC calcula los errores robustos. HC significa heterocedasticity consistent. Una búsqueda rápida en ?vcovHC permite saber que type = “HC0” o, equivalentemente, type = “HC”, produce los errores de White.</em></p>
+<pre class="r"><code>mco_lm &lt;- lm(y ~ x)   
+sqrt(diag(vcovHC(mco_lm, type = &quot;HC0&quot;)))
+## (Intercept)           x 
+##  0.01346937  0.02072586
+sqrt(diag(vcovHC(mco_lm, type = &quot;HC&quot;)))
+## (Intercept)           x 
+##  0.01346937  0.02072586</code></pre></li>
+<li><p>[1 punto] ¿El estimador de MCO es consistente? ¿Por qué?</p>
+<p><em>El estimador de MCO claramente no es consistente. Sabemos que <span class="math inline">\(\beta_1=2\)</span> y que <span class="math inline">\(\beta_2=-1\)</span>, sin embargo, los coeficientes estimados están muy lejos de los parámetros del proceso generador de datos.</em></p></li>
+<li><p>[2 puntos] Plantee la función de log verosimilitud.</p>
+<p><em>En el proceso generador de datos propuesto, la densidad es <span class="math inline">\(f(\theta)=\lambda exp(-y\lambda)\)</span>, donde parametrizamos <span class="math inline">\(\lambda=exp(\beta_1+\beta_2x)\)</span>. Por tanto <span class="math inline">\(\ln f(\lambda)=\ln(\lambda)-y\lambda\)</span>. Y la función de log verosimilitud será</em>:</p>
+<p><span class="math display">\[\mathcal{L}_N(\beta_1,\beta_2)=\sum_i \left(
+(\beta_1+\beta_2 x_i)-y_i exp(\beta_1+\beta_2 x_i)\right)\]</span></p></li>
+<li><p>[4 puntos] Obtenga el estimador de máxima verosimilitud de <span class="math inline">\(\beta_1\)</span> y <span class="math inline">\(\beta_2\)</span> obteniendo la solución al negativo del problema de log verosimilitud. En R, puede emplear, por ejemplo <em>nlm</em>.</p>
+<pre class="r"><code>#MV
+fn&lt;-function(theta){
+  sum(-(theta[1]+theta[2]*x)+(y*exp(theta[1]+theta[2]*x)))
+}
+res_mv &lt;-nlm(fn, theta &lt;- c(.1,-.1), hessian=TRUE)
+res_mv$estimate
+## [1]  2.012268 -1.008822
+
+#Errores asumiendo igualdad de la matriz de información, es decir, errores no robustos (no pedido en el problema). Son los errores entre () en la tabla
+A &lt;- res_mv$hessian
+V_mv &lt;- solve(A)
+sqrt(diag(V_mv))
+## [1] 0.01424297 0.01020450
+
+#Vean que si calculamos B
+index_mv &lt;- X%*%t(t(res_mv$estimate))
+
+#El score es
+s &lt;- matrix(c(1-y*exp(index_mv), x - y*x*exp(index_mv)),ncol = 2) 
+B &lt;- t(s)%*%s
+V_mv_B &lt;- solve(B)
+sqrt(diag(V_mv_B))
+## [1] 0.01467047 0.01053934
+
+#Esto es la igualdad de la matriz de información en acción</code></pre></li>
+<li><p>[3 puntos] Usando la matriz hesiana obtenida en la solución del problema de optimización, encuentre los errores estándar robustos de los coeficientes estimados.</p>
+<pre class="r"><code>#Varianza de sándwich apenas cambia el estimador
+V_mv_White &lt;- solve(A)%*%B%*%solve(A)
+sqrt(diag(V_mv_White))
+## [1] 0.013838404 0.009885757</code></pre></li>
+<li><p>[4 puntos] El modelo antes descrito puede expresarse como una regresión no lineal de la forma <span class="math inline">\(y=exp(-x&#39;\beta)+u\)</span>. Encuentre la solución para <span class="math inline">\(\beta_1\)</span> y <span class="math inline">\(\beta_2\)</span>. Reporte los errores estándar no robustos. ¿Son consistentes estos errores? ¿Por qué?</p>
+<pre class="r"><code>#MCNL
+res_mcnl &lt;- nls(y~exp(-beta1-beta2*x))
+summary(res_mcnl)$coef
+##        Estimate  Std. Error   t value Pr(&gt;|t|)
+## beta1  1.784506 0.029080213  61.36494        0
+## beta2 -0.893747 0.009567403 -93.41584        0
+
+#Calculamos el índice ajustado
+index_mcnl &lt;- -summary(res_mcnl)$coef[1]-summary(res_mcnl)$coef[2]*x
+yhat &lt;- exp(index_mcnl)
+uhat2 &lt;- (y-yhat)^2</code></pre>
+<p><em>Estos errores asumen una varianza homocedástica. Sin embargo, sabemos de del proceso generador de datos que la varianza de una variable aleatoria con que se distribuye exponencial será <span class="math inline">\(\lambda^2\)</span>. Es decir, por construcción el proceso simulado sufre de heterocedasticidad, por lo que el estimador de la varianza de <span class="math inline">\(\hat{\theta}\)</span> es inconsistente.</em></p></li>
+<li><p>[3 puntos] Ahora implementará la matriz de varianzas y covarianzas robusta en la ecuación 5.81 de CT. Dé una expresión para <span class="math inline">\(\hat{D}\)</span> en este problema.</p>
+<p><em>En este problema <span class="math inline">\(g(x_i,\beta)=exp(-x&#39;\beta)\)</span>. Por tanto</em>: <span class="math display">\[D=\partial g/\partial \beta&#39;=exp(-x&#39;\beta)x\]</span> <em>Y un estimador será: <span class="math display">\[\hat{D}=exp(-x&#39;\hat{\beta}_{MCNL})x\]</span></em></p></li>
+<li><p>[3 puntos] Calcule el error estándar robusto definido como en la ecuación 5.81. En este caso <span class="math inline">\(\hat{\Omega}=Diag(\hat{u}_i^2)\)</span>.</p>
+<pre class="r"><code>#Calculamos el índice ajustado
+index_mcnl &lt;- -summary(res_mcnl)$coef[1]-summary(res_mcnl)$coef[2]*x
+yhat &lt;- exp(index_mcnl)
+uhat2 &lt;- (y-yhat)^2
+
+#MCNL robusta
+Omegahat &lt;- diag(as.vector(uhat2))
+
+#El vector de derivadas
+d=cbind(yhat,yhat*x)
+
+#Construimos la matriz de varianzas
+V &lt;- solve(t(d)%*%d)%*%t(d)%*%Omegahat%*%d%*%solve(t(d)%*%d)
+
+#Noten que hay que multiplicar por N/(N-k)
+sqrt(diag(V))*obs/(obs-2)
+##       yhat            
+## 0.08733068 0.03979590</code></pre></li>
+<li><p>[3 puntos] Calcule una versión alternativa de errores estándar (entre corchetes en Tabla 5.7), esta vez con <span class="math inline">\(\hat{\Omega}=Diag((exp(-x_i&#39;\beta))^2)\)</span>.</p>
+<pre class="r"><code>#MCNL, error robusto {}
+Omegahat_alt &lt;- diag(as.vector(yhat^2))
+V &lt;- solve(t(d)%*%d)%*%t(d)%*%Omegahat_alt%*%d%*%solve(t(d)%*%d)
+sqrt(diag(V))
+##       yhat            
+## 0.14489245 0.06479738</code></pre></li>
+<li><p>[1 puntos] En este experimento, ¿qué estimador tiene las mejores propiedades?</p>
+<p><em>El estimador de MCO es inconsistente, mientras que el de MV y de MCNL son consistentes. Los errores no robustos de MCNL son inconsistentes dada la construcción del proceso generador de datos. Usando errores robustos, el estimador de MV es el más eficiente entre los estimadores consistentes.</em></p></li>
+</ol>
+</div>
+<div id="pregunta-6" class="section level2">
+<h2>Pregunta 6</h2>
+<p>Use la base <em>grogger.csv</em> para esta pregunta. Esta base contiene información sobre arrestos y características socioeconómicas de individuos arrestados.</p>
+<ol style="list-style-type: lower-alpha">
+<li><p>[3 puntos] Estime un modelo de probabilidad lineal que relacione <strong>arr86</strong> (haber si arrestado al menos una vez en 1986) con <strong>pcnv</strong>, <strong>avgsen</strong>, <strong>tottime</strong>, <strong>ptime86</strong>, <strong>inc86</strong>, <strong>black</strong>, <strong>hispan</strong> y <strong>born60</strong>. Reporte los errores que asumen homocedasticidad y los errores robustos a heteroscedasticidad.</p>
+<pre class="r"><code>data.grogger&lt;-read_csv(&quot;./grogger.csv&quot;,
+                   locale = locale(encoding = &quot;latin1&quot;))   %&gt;% 
+  clean_names()
+
+#7a. Modelo lineal
+prob_lineal &lt;- lm(arr86 ~ pcnv+avgsen+tottime+ptime86+inc86+black+hispan+born60,
+              data=data.grogger)
+
+#Errores homocedásticos
+summary(prob_lineal)$coef
+##                 Estimate   Std. Error    t value      Pr(&gt;|t|)
+## (Intercept)  0.360983141 0.0160926665 22.4315306 2.222421e-102
+## pcnv        -0.154380197 0.0209335584 -7.3747709  2.175031e-13
+## avgsen       0.003502398 0.0063416742  0.5522829  5.808000e-01
+## tottime     -0.002061300 0.0048883942 -0.4216721  6.732977e-01
+## ptime86     -0.021595259 0.0044679175 -4.8334058  1.416871e-06
+## inc86       -0.001224843 0.0001269505 -9.6481962  1.109628e-21
+## black        0.161718283 0.0235044117  6.8803374  7.384637e-12
+## hispan       0.089258629 0.0205591809  4.3415460  1.466620e-05
+## born60       0.002869817 0.0171986431  0.1668630  8.674903e-01
+
+#Errores robustos
+lmtest::coeftest(prob_lineal, vcov = vcovHC(prob_lineal, &quot;HC&quot;))
+## 
+## t test of coefficients:
+## 
+##                Estimate  Std. Error  t value  Pr(&gt;|t|)    
+## (Intercept)  0.36098314  0.01668044  21.6411 &lt; 2.2e-16 ***
+## pcnv        -0.15438020  0.01893269  -8.1542 5.311e-16 ***
+## avgsen       0.00350240  0.00587790   0.5959    0.5513    
+## tottime     -0.00206130  0.00421859  -0.4886    0.6251    
+## ptime86     -0.02159526  0.00274863  -7.8567 5.633e-15 ***
+## inc86       -0.00122484  0.00011395 -10.7487 &lt; 2.2e-16 ***
+## black        0.16171828  0.02548569   6.3455 2.590e-10 ***
+## hispan       0.08925863  0.02103411   4.2435 2.274e-05 ***
+## born60       0.00286982  0.01713126   0.1675    0.8670    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre></li>
+<li><p>[3 puntos] ¿Cuál es el efecto en la probabilidad de arresto si <strong>pcnv</strong> pasa de 0.25 a 0.75?</p>
+<p><em>Como estamos estimando un modelo lineal, el efecto marginal es el mismo a lo largo de toda la curva de regresión. Para obtener el efecto deseado, basta multiplicar el coeficiente estimado para pcnv por la magnitud del cambio:</em></p>
+<pre class="r"><code>prob_lineal$coef[2]*.25
+##        pcnv 
+## -0.03859505</code></pre></li>
+<li><p>[4 puntos] Realice una prueba de significancia conjunta de <strong>avgsen</strong> y <strong>tottime</strong>. ¿Qué concluye?</p>
+<p><em>Aquí usé linearHypothesis de la librería car:</em></p>
+<pre class="r"><code>car::linearHypothesis(prob_lineal, c(&quot;avgsen=0&quot;, &quot;tottime=0&quot;, &quot;born60=0&quot;))
+## Linear hypothesis test
+## 
+## Hypothesis:
+## avgsen = 0
+## tottime = 0
+## born60 = 0
+## 
+## Model 1: restricted model
+## Model 2: arr86 ~ pcnv + avgsen + tottime + ptime86 + inc86 + black + hispan + 
+##     born60
+## 
+##   Res.Df    RSS Df Sum of Sq      F Pr(&gt;F)
+## 1   2719 500.92                           
+## 2   2716 500.84  3  0.071308 0.1289  0.943</code></pre>
+<p><em>La hipótesis nula <span class="math inline">\(H_0\)</span> es que ambos coeficientes son iguales a cero. El valor del estadístico F es pequeño (0.1289), con un valor <span class="math inline">\(p\)</span> de 0.94, por lo que no se rechaza la <span class="math inline">\(H_0\)</span>.</em></p></li>
+<li><p>[5 puntos] Estime un modelo probit relacionando las mismas variables. ¿Cuál es el efecto en la probabilidad de arresto cuando <strong>pcnv</strong> pasa de 0.25 a 0.75 para los valores promedio de <strong>avgsen</strong>, <strong>tottime</strong>, <strong>inc86</strong> y <strong>ptime86</strong> y cuando los individuos son de raza negra, no hispánicos y nacidos en 1960 (<strong>born60</strong> igual a 1). ¿Cómo se comparan estos resultados con lo que encontró con el modelo de probabilidad lineal?</p>
+<p><em>Estimamos el modelo probit</em>:</p>
+<pre class="r"><code>prob_probit &lt;- glm(arr86 ~ pcnv+avgsen+tottime+ptime86+inc86+black+hispan+born60, family = binomial(link = &quot;probit&quot;), 
+data = data.grogger)
+summary(prob_probit)$coef
+##                 Estimate   Std. Error    z value     Pr(&gt;|z|)
+## (Intercept) -0.313833303 0.0513645961 -6.1099148 9.968437e-10
+## pcnv        -0.552925133 0.0715054868 -7.7326253 1.053511e-14
+## avgsen       0.012739470 0.0209105156  0.6092375 5.423670e-01
+## tottime     -0.007648510 0.0165677095 -0.4616516 6.443312e-01
+## ptime86     -0.081199594 0.0171628579 -4.7311231 2.232811e-06
+## inc86       -0.004634612 0.0004852644 -9.5506951 1.288290e-21
+## black        0.466607743 0.0718600190  6.4932872 8.398336e-11
+## hispan       0.291100547 0.0653906780  4.4517132 8.518788e-06
+## born60       0.011206734 0.0556932300  0.2012225 8.405246e-01</code></pre>
+<p><em>Para evaluar el cambio en la probabilidad, evaluamos dos distintos valores del índice, uno cuando pcnv es 0.50 y otro cuando es 0.75, mientras que en ambos casos mantenemos el resto de los regresores en los valores especificados. Esto es</em>: <span class="math display">\[P(y=1│X=x,pcnv=0.75)-P(y=1│X=x,pcnv=0.50)\]</span></p>
+<pre class="r"><code>    #Medias de cada variable tottime inc86 ptime86
+    mean_avgsen=mean(data.grogger$avgsen)
+    mean_tottime=mean(data.grogger$tottime)
+    mean_inc86=mean(data.grogger$inc86)
+    mean_ptime86=mean(data.grogger$ptime86)
+
+    #Creamos un índice con todas las variables excepto pcnv
+
+    index_partial &lt;- summary(prob_probit)$coef[1]+
+    summary(prob_probit)$coef[3]*mean_avgsen+
+    summary(prob_probit)$coef[4]*mean_tottime+
+    summary(prob_probit)$coef[6]*mean_inc86+
+    summary(prob_probit)$coef[5]*mean_ptime86+
+    summary(prob_probit)$coef[7]*1+
+    summary(prob_probit)$coef[8]*0+
+    summary(prob_probit)$coef[9]*1
+
+    #Evaluamos la diferencia de probabilidad
+
+    pnorm(index_partial+summary(prob_probit)$coef[2]*.50)-pnorm(index_partial+summary(prob_probit)$coef[2]*.25)
+## [1] -0.05222262</code></pre>
+<p><em>El efecto es de una disminución de alrededor de 5.22%, menor en magnitud que lo estimado con el modelo lineal.</em></p></li>
+</ol>
+</div>
