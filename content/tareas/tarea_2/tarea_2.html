@@ -1,6 +1,6 @@
 ---
 title: "Tarea 2"
-summary: "Martes 11 de ocutbre a las 20:00"
+summary: "Martes 4 de ocutbre a las 20:00"
 weight: 1
 type: book
 toc: false
@@ -8,3 +8,93 @@ toc: false
 
 
 
+<div id="instrucciones" class="section level2">
+<h2>Instrucciones</h2>
+<p>Las tareas deben entregarse de manera individual, pero se recomienda ampliamente colaborar en grupos de estudio. Las tareas deberán entregarse en Teams antes de la fecha y hora señalada. No se aceptarán tareas fuera de tiempo. Por favor, no comprima los archivos en carpetas comprimidas. Las tareas deberán contener dos archivos:</p>
+<p>Un primer documento de respuestas donde se incluyan las respuestas a las preguntas teóricas y conceptuales. Este documento debe estar en formato pdf y debe ser generado usando un software de procesamiento de textos científicos, por ejemplo, usando los leguajes LaTeX o Markdown. En este documento también se deben incluir las respuestas a preguntas sobre conclusiones que se desprenden de las secciones prácticas. Por ejemplo, si una pregunta pide obtener la media de la variable x en cierta base de datos, entonces el documento de respuestas debe incluir la pregunta y respuesta correspondiente: “la media de la variable x es 32.6”. En este documento también deberán incluirse las tablas y gráficas que se soliciten.</p>
+<p>Un segundo archivo deberá contener el código replicable usado para generar los resultados de la sección práctica. El código debe también crear las tablas y gráficas solicitadas. Los archivos de código se verificarán para comprobar su replicabilidad de manera aleatoria.</p>
+</div>
+<div id="fecha-de-entrega" class="section level2">
+<h2>Fecha de entrega</h2>
+<p>Martes 4 de octubre a las 20:00</p>
+</div>
+<div id="archivos" class="section level2">
+<h2>Archivos</h2>
+<p><a href="/tareas/tarea_1/grogger.csv">grogger.csv</a></p>
+<p><a href="/tareas/tarea_1/phd_articulos.csv">phd_articulos.csv</a></p>
+<p><a href="/tareas/tarea_2/motral2012.csv">motral2012.csv</a></p>
+</div>
+<div id="pregunta-1" class="section level2">
+<h2>Pregunta 1</h2>
+<p>Use los datos del arichivo <em>grogger.csv</em> para esta pregunta. Estos datos contienen información sobre arrestos y características socioeconómicas de individuos arrestados.</p>
+<ol style="list-style-type: lower-alpha">
+<li><p>[2 punto] Estime un modelo de probabilidad lineal que relacione <strong>arr86</strong> (haber si arrestado al menos una vez en 1986) con <strong>pcnv</strong>, <strong>avgsen</strong>, <strong>tottime</strong>, <strong>ptime86</strong>, <strong>inc86</strong>, <strong>black</strong>, <strong>hispan</strong> y <strong>born60</strong>. Reporte los errores que asumen homocedasticidad y los errores robustos a heteroscedasticidad.</p></li>
+<li><p>[2 puntos] ¿Cuál es el efecto en la probabilidad de arresto si <strong>pcnv</strong> pasa de 0.5 a 0.75?</p></li>
+<li><p>[3 puntos] Realice una prueba de significancia conjunta de <strong>avgsen</strong>, <strong>tottime</strong> y <strong>born60 </strong>. ¿Qué concluye?</p></li>
+<li><p>[3 puntos] Estime un modelo probit relacionando las mismas variables. ¿Cuál es el efecto en la probabilidad de arresto cuando <strong>pcnv</strong> pasa de 0.50 a 0.75, evaluando el cambio en los valores promedio de <strong>avgsen</strong>, <strong>tottime</strong>, <strong>inc86</strong> y <strong>ptime86</strong> y cuando los individuos son de raza negra, no hispánicos y nacidos en 1960 (<strong>born60</strong> igual a 1). ¿Cómo se comparan estos resultados con lo que encontró con el modelo de probabilidad lineal?</p></li>
+</ol>
+</div>
+<div id="pregunta-2" class="section level2">
+<h2>Pregunta 2</h2>
+<p>Use los datos <em>phd_articulos.csv</em>, los cuales contienen información sobre el número de artículos publicados en los últimos tres años del doctorado para una muestra de entonces estudiantes. Nuestra variable de interés será entonces <strong>art</strong>.</p>
+<ol style="list-style-type: lower-alpha">
+<li><p>[2 puntos] ¿Hay evidencia de sobredispersión en la variable <strong>art</strong>?</p></li>
+<li><p>[3 puntos] Independientemente de si hay evidencia de sobredispersión o no, estime un modelo Poisson que incluya variables dicotómicas para estudiantes mujeres y para estudiantes casadas o casados, la cantidad de hijos mejores de cinco años, el ranking de prestigio del doctorado (<strong>phd</strong>) y el número de artículos publicados por su mentor. Interprete los coeficientes estimados.</p></li>
+<li><p>[4 puntos] Obtenga la razón de tasas de incidencia (IRR) para los coeficientes e interprete los resultados.</p></li>
+<li><p>[3 puntos] Considere ahora que las mujeres han tenido carreras profesionales más cortas que los hombres, es decir, han estado menos expuestas a la ocurrencia de los eventos “publicar”. Incorpore esto al análisis y reinterprete los resultados. Pista: explore la opción <em>offeset</em> en R. Note que la variable <strong>profage</strong> mide la duración efectiva de las carreras profesionales de cada individuo.</p></li>
+<li><p>[3 puntos] Emplee ahora un modelo negativo binomial con sobredispersión cuadrática en la media para estimar la relación entre el número de artículos publicados y las variables explicativas antes enumeradas. Interprete el coeficiente asociado al número de hijos y a la variable dicotómica para estudiantes mujeres. ¿Qué puede decir sobre la significancia del <span class="math inline">\(\alpha\)</span> estimado?</p></li>
+</ol>
+</div>
+<div id="pregunta-3" class="section level2">
+<h2>Pregunta 3</h2>
+<p>Use los datos en el archivo <em>motral2012.csv</em>, que contienen una muestra de personas en edad de trabajar de México. Estimará un modelo Tobit para explicar los factores que afectan la oferta laboral femenina. En estos datos la variable <strong>hrsocup</strong> registra las horas trabajadas a la semana.</p>
+<ol style="list-style-type: lower-alpha">
+<li><p>[2 punto] ¿Qué proporción de la muestra femenina reporta horas trabajadas iguales a cero? Cuando la variable <strong>sex==2</strong> se trata de una mujer.</p></li>
+<li><p>[3 puntos] Se desea estimar el efecto de los años de educación (<strong>anios_esc</strong>) sobre la oferta laboral femenina controlando por el estado marital (<strong>casada</strong>), la edad (<strong>eda</strong>) y el número de hijos (<strong>n_hij</strong>) como una variable continua. En los datos, <strong>e_con</strong> toma el valor de 5 para las personas casadas. Genere la variable dummy <strong>casada</strong> que tome el valor de 1 para las mujeres casadas y cero en otro caso. Estime un modelo de MCO usando solo las personas que tienen <strong>hrsocup</strong> mayor que cero, usando solo la población femenina. Reporte errores robustos. ¿Cuál es la interpretación sobre el coeficiente de los años de escolaridad?</p></li>
+<li><p>[3 puntos] ¿Qué problema existe con el modelo planteado en el punto anterior en términos de la selección? ¿Considera que se trata de un caso de censura o de truncamiento?</p></li>
+<li><p>[8 puntos] Estime un modelo Tobit de datos censurados. ¿Qué resuelve el modelo Tobit en este caso? Interprete nuevamente el coeficiente sobre los años de escolaridad.</p></li>
+<li><p>[4 puntos] ¿Cuál es el efecto marginal de un incremento de un año de educación en la oferta laboral? ¿Cómo cambia su respuesta si, en lugar de considerar la variable latente, considera la variable censurada?</p></li>
+</ol>
+</div>
+<div id="pregunta-4" class="section level2">
+<h2>Pregunta 4</h2>
+<p>Usando los mismos datos <em>motral2012.csv</em> implementará un ejercicio en el mismo espíritu del famoso estudio de Mroz (1987)<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> sobre la oferta laboral femenina. El propósito es estimar la relación entre el salario y el número de horas trabajadas, concentrándonos en la muestra de mujeres.</p>
+<ol style="list-style-type: lower-alpha">
+<li><p>[5 puntos] El primer problema al que nos enfrentamos es que el salario será no observado para las mujeres que no trabajan. Estime un modelo lineal para el log del salario por hora, <strong>ing_x_hrs</strong>, usando las variables <strong>anios_esc</strong>, <strong>eda</strong>, <strong>n_hij</strong>, el cuadrado de <strong>n_hij</strong>, <strong>busqueda</strong> y <strong>casada</strong>, usando la submuestra de mujeres con salario por hora positivo. Dichas variables representan los años de escolaridad, la edad, el número de hijos, el cuadrado del número de hijos, si la persona buscó trabajo recientemente y si la persona es casada, respectivamente. Use los coeficientes estimados para imputar el ingreso por hora, faltante para las mujeres que reportan 0 en las horas trabajadas.</p></li>
+<li><p>[5 puntos] Use <em>heckit</em> de la librería <em>sampleSelection</em> para estimar por máxima verosimilitud un <em>heckit</em> para las horas trabajadas <strong>hrsocup</strong>. En la ecuación de selección (si la persona trabaja o no) incluya como variable explicativa el salario por hora (imputado para las mujeres que no trabajan), además de <strong>anios_esc</strong>, <strong>eda</strong>, <strong>n_hij</strong> y <strong>casada</strong>. En la ecuación de horas, incluya los mismos regresores, excepto <strong>n_hij</strong>.</p></li>
+<li><p>[10 puntos] Estime ahora el <em>heckit</em> en dos pasos, <em>a mano</em>. Es decir, siga los siguientes pasos: i) estime un probit para la ecuación de selección y obtenga el índice <span class="math inline">\(x_i&#39;\hat{\beta}\)</span>; ii) calcule el inverso de la razón de Mills <span class="math inline">\(\lambda_i(x_i&#39;\hat{\beta})\)</span>; y iii) estime por MCO la ecuación para las horas trabajadas con la submuestra que tiene horas trabajadas positivas, incluyendo como regresor el inverso de la razón de Mills estimado y el resto de los regresores.</p>
+<p>Compare los coeficientes y los errores estándar obtenidos en esta parte con los de la parte b. ¿Por qué son iguales o por qué difieren?</p></li>
+</ol>
+</div>
+<div id="pregunta-5-modelo-poisson-inflado-en-cero" class="section level2">
+<h2>Pregunta 5: modelo Poisson inflado en cero</h2>
+<p>Otra manera de resolver el problema del exceso de ceros que a veces nos molesta en los modelos Poisson es usar un modelo Poisson inflado en cero (CT, p. 681). La idea es introducir un proceso binario con densidad <span class="math inline">\(f_1(\cdot)\)</span> para modelar la probabilidad de que <span class="math inline">\(y=0\)</span> y luego una densidad de conteo <span class="math inline">\(f_2(\cdot)\)</span>. Si el proceso binario toma el valor de 0, con probabilidad <span class="math inline">\(f_1(0)\)</span>, entonces <span class="math inline">\(y=0\)</span>, pero si el proceso binario toma el valor de 1, entonces <span class="math inline">\(y={0,1,2,\ldots}\)</span>. Note que podemos entonces observar ceros por dos razones, por el proceso binomial o por el conteo.</p>
+<p>Un modelo inflado en cero tendrá como densidad:</p>
+<p><span class="math display">\[
+g(y)=
+\begin{cases}
+f_1(0)+(1-f_1(0))f_2(0) &amp; \text{si }y=0 \\
+(1-f_1(0))f_2(y)&amp; \text{si }y\geq 1
+\end{cases}
+\]</span>
+Considere la variable aleatoria <span class="math inline">\(Y\)</span> con observaciones iid que sigue una distribución Poisson con parámetro <span class="math inline">\(\lambda\)</span>. Y considere una variable un proceso binomial tal que <span class="math inline">\(\pi\)</span> es la probabilidad de que el conteo no se realice. Entonces:</p>
+<p><span class="math display">\[
+g(y)=
+\begin{cases}
+\pi+(1-\pi)f_2(0) &amp; \text{si }y=0 \\
+(1-\pi)f_2(y)&amp; \text{si }y\geq 1
+\end{cases}
+\]</span></p>
+<ol style="list-style-type: lower-alpha">
+<li><p>[4 puntos] Termine de especializar la expresión anterior unsando la distribución Poisson para <span class="math inline">\(f_2(\cdot)\)</span> para obtener la función de masa de probabilidad del modelo Poisson inflado en cero <span class="math inline">\(g(y|\lambda, \pi)\)</span>.</p></li>
+<li><p>[7 puntos] Provea una expresión para la función de verosimilitud <span class="math inline">\(L(\lambda,\pi)=\prod_{i=1}^N g(y_i|\lambda, \pi)\)</span>. Una sugerencia para simplificar sus cálculos es definir una variable <span class="math inline">\(X\)</span> igual al numero de veces que <span class="math inline">\(Y_i\)</span> que toma el valor de cero.</p></li>
+<li><p>[6 puntos] Provea una expresión para la log verosimilitud del problema, <span class="math inline">\(\mathcal{L}(\lambda,\pi)\)</span>.</p></li>
+<li><p>[8 puntos] Obtenga las condiciones de primer orden que caracterizan la solución del problema de máxima verosimilitud, derivando la log verosimilitud con respecto a <span class="math inline">\(\lambda\)</span> y a <span class="math inline">\(\pi\)</span>.</p></li>
+</ol>
+</div>
+<div class="footnotes footnotes-end-of-document">
+<hr />
+<ol>
+<li id="fn1"><p>Mroz, T. A. (1987). <a href="https://www.jstor.org/stable/1911029?casa_token=Uwxeul7XeBkAAAAA%3AyOzMP-SP9bdQNxw1FwyVjnEJt3w2ShyTtiinMVL6RZnpxKeehfas96e2ETxA6us20xyQG-NUF71svQugl78mx6vG2oJ2k7U39TtJn6P6dq-iTH2aDWsH&amp;seq=1#metadata_info_tab_contents">The sensitivity of an empirical model of married women’s hours of work to economic and statistical assumptions</a>. <em>Econometrica</em>: Journal of the econometric society, 765-799.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
