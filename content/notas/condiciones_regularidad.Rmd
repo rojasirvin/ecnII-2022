@@ -1,0 +1,73 @@
+---
+title: "Condiciones de regularidad"
+summary: " "
+weight: 1
+type: book
+toc: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE)
+```
+
+Basado en Cameron & Trivedi (sección 5.6.7)
+
+Si el orden para tomar expectativas y de derivación puede intercambiarse, las condiciones de regularidad son:
+
+1. El vector score evaluado en el parámetro verdadero tiene esperanza cero: $$E_f\left(\frac{\partial \ln f(y|x,\theta)}{\partial \theta}\right)=\int\frac{\partial \ln f(y|x,\theta)}{\partial \theta}f(y|x,\theta)=0$$
+
+    *Prueba*:
+    
+    Sabemos que la densidad integra a 1 por definición. Derivando ambos lados con respecto a $\theta$:
+    
+    $$
+    \begin{align}
+    \int f(y|\theta)dy=1 \\
+    \frac{\partial \int f(y|\theta)dy}{\partial \theta}=0
+    \end{align}
+    $$
+    Y si podemos intercambiar el orden de integración y derivación tenemos:
+    
+    $$
+    \begin{align}
+    \int \frac{\partial f(y|\theta)}{\partial \theta}dy=0
+    \end{align}
+    $$
+    
+    Recordemos que $\frac{\partial \ln f(y|\theta)}{\partial \theta}=\frac{\frac{\partial f(y|\theta)}{\partial \theta}}{f(y|\theta)}$, por tanto, podemos sustituir el lado izquierdo:
+    
+    $$
+    \int\frac{\partial \ln f(y|\theta)}{\partial \theta} f(y|\theta) dy=0 \\ 
+    $$
+
+
+1. Con un vector score con esperanza cero, se cumple que: $$-E_f\left(\frac{\partial^2\ln f(y|x,\theta)}{\partial \theta \partial \theta'}\right)=E_f\left(\frac{\partial \ln f(y|x,\theta)}{\partial \theta} \frac{\partial \ln f(y|x,\theta)}{\partial \theta'}\right)$$
+    
+    *Prueba*:
+
+    Partimos de la condición 1 y derivamos con respecto a $\theta'$ adentro de la integral:
+    
+    $$
+    \int\left( \frac{\partial}{\partial \theta'}\left(\frac{\partial \ln f(y|\theta)}{\partial \theta}\right) f(y|\theta) + \frac{\partial \ln f(y|\theta)}{\partial \theta} \frac{\partial f(y|\theta)}{\partial \theta'}\right) dy=0 \\
+    $$
+    
+    De nuevo, usemos el hecho de que $\frac{\partial \ln f(y|\theta)}{\partial \theta}=\frac{\frac{\partial f(y|\theta)}{\partial \theta}}{f(y|\theta)}$ para sustituir el segundo sumando adentro de la integral
+    
+    $$
+    \int\left( \frac{\partial}{\partial \theta'}\left(\frac{\partial \ln f(y|\theta)}{\partial \theta}\right) f(y|\theta) + \frac{\partial \ln f(y|\theta)}{\partial \theta} \frac{\partial \ln f(y|\theta)}{\partial \theta'}f(y|\theta)\right) dy=0 \\
+    $$
+    
+    Reorganizando
+    
+    $$
+    \int \frac{\partial}{\partial \theta'}\left(\frac{\partial \ln f(y|\theta)}{\partial \theta}\right) f(y|\theta)dy = -\int \frac{\partial \ln f(y|\theta)}{\partial \theta} \frac{\partial \ln f(y|\theta)}{\partial \theta'}f(y|\theta) dy \\
+    $$
+    
+    Tomando expectativas con respecto a la densidad $f(y|\theta)$:
+    
+    $$
+    E\left(\frac{\partial}{\partial \theta'}\left(\frac{\partial \ln f(y|\theta)}{\partial \theta}\right) \right) = - E\left(\frac{\partial \ln f(y|\theta)}{\partial \theta} \frac{\partial \ln f(y|\theta)}{\partial \theta'}\right)
+    $$
+
+
+
