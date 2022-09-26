@@ -29,9 +29,9 @@ Martes 4 de octubre a las 20:00
 
 ## Archivos
 
-[grogger.csv](/tareas/tarea_1/grogger.csv)
+[grogger.csv](/tareas/tarea_2/grogger.csv)
 
-[phd_articulos.csv](/tareas/tarea_1/phd_articulos.csv)
+[phd_articulos.csv](/tareas/tarea_2/phd_articulos.csv)
 
 [motral2012.csv](/tareas/tarea_2/motral2012.csv)
 
