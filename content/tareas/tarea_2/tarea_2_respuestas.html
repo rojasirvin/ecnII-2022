@@ -1,0 +1,508 @@
+---
+title: "Respuestas a la tarea 2"
+summary: " "
+weight: 2
+type: book
+toc: false
+---
+
+
+
+<div id="pregunta-1-cancelada.-10-puntos-serán-reescalados" class="section level2">
+<h2>Pregunta 1 (CANCELADA. 10 puntos serán reescalados)</h2>
+</div>
+<div id="pregunta-2" class="section level2">
+<h2>Pregunta 2</h2>
+<p>Use los datos <em>phd_articulos.csv</em>, los cuales contienen información sobre el número de artículos publicados en los últimos tres años del doctorado para una muestra de entonces estudiantes. Nuestra variable de interés será entonces <strong>art</strong>.</p>
+<ol style="list-style-type: lower-alpha">
+<li><p>[2 puntos] ¿Hay evidencia de sobredispersión en la variable <strong>art</strong>?</p>
+<p><em>La media de la variable <strong>art</strong> es 1.69, mientras que la varianza es 3.71. Esto puede ser un indicativo de que un modelo Poisson no es adecuado, pues en una distribución Poisson la media es igual a la varianza. Parce haber evidencia de sobredispersión.</em></p>
+<pre class="r"><code>data.phd&lt;-read_csv(&quot;./phd_articulos.csv&quot;,
+                      locale = locale(encoding =                &quot;latin1&quot;)) 
+
+#a. Descriptiva
+stat.desc(data.phd$art)
+##      nbr.val     nbr.null       nbr.na          min          max        range 
+## 9.150000e+02 2.750000e+02 0.000000e+00 0.000000e+00 1.900000e+01 1.900000e+01 
+##          sum       median         mean      SE.mean CI.mean.0.95          var 
+## 1.549000e+03 1.000000e+00 1.692896e+00 6.367388e-02 1.249640e-01 3.709742e+00 
+##      std.dev     coef.var 
+## 1.926069e+00 1.137736e+00</code></pre></li>
+<li><p>[3 puntos] Independientemente de si hay evidencia de sobredispersión o no, estime un modelo Poisson que incluya variables dicotómicas para estudiantes mujeres y para estudiantes casadas o casados, la cantidad de hijos mejores de cinco años, el ranking de prestigio del doctorado (<strong>phd</strong>) y el número de artículos publicados por su mentor. Interprete los coeficientes estimados.</p>
+<pre class="r"><code>  #Hay que asegurarnos que los factores tengan sentido
+data.phd &lt;- data.phd %&gt;% 
+  mutate(female=factor(female,
+                   levels=c(&#39;Male&#39;,&#39;Female&#39;)))
+
+mpoisson &lt;- glm(art ~ factor(female) + factor(married) + kid5 + phd + mentor,
+            family=&quot;poisson&quot;, data=data.phd)
+
+summary(mpoisson)
+## 
+## Call:
+## glm(formula = art ~ factor(female) + factor(married) + kid5 + 
+##     phd + mentor, family = &quot;poisson&quot;, data = data.phd)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -3.5672  -1.5398  -0.3660   0.5722   5.4467  
+## 
+## Coefficients:
+##                        Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)            0.459860   0.093335   4.927 8.35e-07 ***
+## factor(female)Female  -0.224594   0.054613  -4.112 3.92e-05 ***
+## factor(married)Single -0.155243   0.061374  -2.529   0.0114 *  
+## kid5                  -0.184883   0.040127  -4.607 4.08e-06 ***
+## phd                    0.012823   0.026397   0.486   0.6271    
+## mentor                 0.025543   0.002006  12.733  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for poisson family taken to be 1)
+## 
+##     Null deviance: 1817.4  on 914  degrees of freedom
+## Residual deviance: 1634.4  on 909  degrees of freedom
+## AIC: 3314.1
+## 
+## Number of Fisher Scoring iterations: 5</code></pre>
+<p><em>Para las variables continuas, como el número de artículos publicados por el mentor, la interpretación es el cambio en el log conteo esperado. En este caso, un artículo más publicado por el mentor incrementa el log conteo esperado en 0.026. También sabemos que los coeficientes tienen una interpretación de semielasticidad; en este caso, la semielasticidad del conteo con respecto al número de artículos publicados es 0.026. Para las variables dicotómicas, por ejemplo female, la interpretación es la diferencia entre el log conteo esperado entre mujeres y la categoría base (hombres).</em></p></li>
+<li><p>[4 puntos] Obtenga la razón de tasas de incidencia (IRR) para los coeficientes e interprete los resultados.</p>
+<pre class="r"><code>exp(summary(mpoisson)$coef)
+##                        Estimate Std. Error      z value Pr(&gt;|z|)
+## (Intercept)           1.5838526   1.097829 1.379638e+02 1.000001
+## factor(female)Female  0.7988403   1.056132 1.636793e-02 1.000039
+## factor(married)Single 0.8562068   1.063297 7.970295e-02 1.011490
+## kid5                  0.8312018   1.040943 9.977222e-03 1.000004
+## phd                   1.0129051   1.026749 1.625407e+00 1.872246
+## mentor                1.0258718   1.002008 3.386456e+05 1.000000</code></pre>
+<p><em>La interpretación de los coeficientes se vuelve más sencilla usando irr. Para la variable continua mentor, un artículo más publicado por el mentor está asociado con 1.026 veces más artículos publicados por el estudiante, es decir, un 2.6% más artículos. En cambio, la variable dicotómica para mujeres indica que las mujeres publican 0.8 veces el número de artículos que los hombres.</em></p>
+<p><em>Noten que stargazer también transforma los coeficientes:</em></p>
+<pre class="r"><code>stargazer(mpoisson,
+      apply.coef = exp,
+      apply.se   = exp,
+      type=&#39;text&#39;)
+## 
+## =================================================
+##                           Dependent variable:    
+##                       ---------------------------
+##                                   art            
+## -------------------------------------------------
+## factor(female)Female             0.799           
+##                                 (1.056)          
+##                                                  
+## factor(married)Single            0.856           
+##                                 (1.063)          
+##                                                  
+## kid5                             0.831           
+##                                 (1.041)          
+##                                                  
+## phd                              1.013           
+##                                 (1.027)          
+##                                                  
+## mentor                           1.026           
+##                                 (1.002)          
+##                                                  
+## Constant                         1.584           
+##                                 (1.098)          
+##                                                  
+## -------------------------------------------------
+## Observations                      915            
+## Log Likelihood                -1,651.056         
+## Akaike Inf. Crit.              3,314.113         
+## =================================================
+## Note:                 *p&lt;0.1; **p&lt;0.05; ***p&lt;0.01</code></pre></li>
+<li><p>[3 puntos] Considere ahora que las mujeres han tenido carreras profesionales más cortas que los hombres, es decir, han estado menos expuestas a la ocurrencia de los eventos “publicar”. Incorpore esto al análisis y reinterprete los resultados. Pista: explore la opción <em>offeset</em> en R. Note que la variable <strong>profage</strong> mide la duración efectiva de las carreras profesionales de cada individuo.</p>
+<p><em>El razonamiento es que ahora queremos conocer cuál es la tasa de publicación, es decir, <span class="math inline">\(art/profage\)</span>. Pero como nuestro podemos Poisson solo puede manejar conteos, podemos modificar el modelo para pasar la edad de la carrera del lado derecho:</em></p>
+<p><span class="math display">\[\begin{aligned}ln(art/profage)&amp;=x&#39;\beta \\ ln(art)&amp;=x&#39;\beta+\ln(profage) \end{aligned}\]</span></p>
+<pre class="r"><code>mpoisson_duracion &lt;- glm(art ~
+              factor(female) + factor(married) + kid5 + phd + mentor,
+              offset = log(profage),
+            family=&quot;poisson&quot;,
+            data=data.phd)
+
+summary(mpoisson_duracion)$coef
+##                          Estimate  Std. Error     z value      Pr(&gt;|z|)
+## (Intercept)           -2.95404558 0.093812104 -31.4889600 1.230266e-217
+## factor(female)Female   0.45874678 0.054721432   8.3833109  5.145931e-17
+## factor(married)Single -0.15598278 0.061347334  -2.5426171  1.100257e-02
+## kid5                  -0.18643454 0.040135522  -4.6451256  3.398696e-06
+## phd                    0.01801602 0.026428953   0.6816773  4.954430e-01
+## mentor                 0.02573493 0.002001731  12.8563329  7.924799e-38</code></pre>
+<p><em>Hasta ahora hemos asumido que cada individuo ha estado “en riesgo” de publicar por el mismo periodo de tiempo, lo cual puede ser no cierto si, por ejemplo, algunos estudiantes se graduaron antes, o si otros han tenido pausas en sus carreras. Al controlar por el hecho de que las mujeres han tenido carreras más cortas, la variable female deja de ser negativa y se convierte en positiva. Las mujeres publican más que los hombres al tomar en cuenta la duración de las carreras.</em></p></li>
+<li><p>[3 puntos] Emplee ahora un modelo negativo binomial con sobredispersión cuadrática en la media para estimar la relación entre el número de artículos publicados y las variables explicativas antes enumeradas. Interprete el coeficiente asociado al número de hijos y a la variable dicotómica para estudiantes mujeres. ¿Qué puede decir sobre la significancia del <span class="math inline">\(\alpha\)</span> estimado?</p>
+<pre class="r"><code>mnb2 &lt;- MASS::glm.nb(art ~
+             factor(female) + factor(married) + kid5 + phd + mentor,
+           data = data.phd)
+summary(mnb2)
+## 
+## Call:
+## MASS::glm.nb(formula = art ~ factor(female) + factor(married) + 
+##     kid5 + phd + mentor, data = data.phd, init.theta = 2.264387695, 
+##     link = log)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -2.1678  -1.3617  -0.2806   0.4476   3.4524  
+## 
+## Coefficients:
+##                        Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)            0.406633   0.125778   3.233 0.001225 ** 
+## factor(female)Female  -0.216418   0.072636  -2.979 0.002887 ** 
+## factor(married)Single -0.150489   0.082097  -1.833 0.066791 .  
+## kid5                  -0.176415   0.052813  -3.340 0.000837 ***
+## phd                    0.015271   0.035873   0.426 0.670326    
+## mentor                 0.029082   0.003214   9.048  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for Negative Binomial(2.2644) family taken to be 1)
+## 
+##     Null deviance: 1109.0  on 914  degrees of freedom
+## Residual deviance: 1004.3  on 909  degrees of freedom
+## AIC: 3135.9
+## 
+## Number of Fisher Scoring iterations: 1
+## 
+## 
+##               Theta:  2.264 
+##           Std. Err.:  0.271 
+## 
+##  2 x log-likelihood:  -3121.917
+
+#A diferencia de otros paquetes, R reporta \theta=1/\alpha
+(alpha &lt;- 1/summary(mnb2)$theta)        
+## [1] 0.4416205</code></pre>
+<p><em>Este es el modelo NB2 visto en clase y la forma más usada para implementar un modelo negativo binomial. Se asume una sobredispersión cuadrática en la media, con la varianza parametrizada usando <span class="math inline">\(\alpha\)</span>. En este caso, <span class="math inline">\(\hat{\alpha}=0.44\)</span> y es estadísticamente significativo al 10%. De nuevo, la interpretación se mantiene con respecto a NB1 y al modelo Poisson. Los coeficientes tienen magnitudes similares, pero se prefiere el modelo NB2 pues toma en cuenta la sobredispersión y le da suficiente flexibilidad a la varianza para depender de manera cuadrática de la media.</em></p>
+<p><em>También podríamos estimar el NB1 visto en clase, aunque es el menos usado de las dos posibles especificaciones del modelo negativo binomial. Se asume que la sobredispersión es un factor constante de la media. Los coeficientes tienen exactamente la misma interpretación que en el modelo Poisson pues en ambos casos la media está parametrizada de la misma manera. Más aún, los coeficientes estimados apenas difieren de la versión Poisson. Para estimar este modelo usé ml.nb1 del paquete COUNT.</em></p>
+<pre class="r"><code>mnb1 &lt;- COUNT::ml.nb1(art ~
+             factor(female) + factor(married) + kid5 + phd + mentor, data = data.phd)
+mnb1
+##                          Estimate          SE          Z         LCL
+## (Intercept)            0.39932986 0.120678876  3.3090287  0.16279926
+## factor(female)Female  -0.18336608 0.069842879 -2.6254084 -0.32025813
+## factor(married)Single -0.15473849 0.078712292 -1.9658746 -0.30901459
+## kid5                  -0.17284325 0.051082365 -3.3836187 -0.27296468
+## phd                    0.03032082 0.033987903  0.8921061 -0.03629547
+## mentor                 0.02412048 0.002599684  9.2782354  0.01902510
+## alpha                  0.79174542 0.097242882  8.1419370  0.60114937
+##                                 UCL
+## (Intercept)            0.6358604598
+## factor(female)Female  -0.0464740398
+## factor(married)Single -0.0004624015
+## kid5                  -0.0727218098
+## phd                    0.0969371064
+## mentor                 0.0292158556
+## alpha                  0.9823414685</code></pre>
+<p><em>Aquí <span class="math inline">\(\alpha\)</span> es el parámetro <span class="math inline">\(\gamma\)</span> descrito en el quinto párrafo de la página 676 en CT.</em></p></li>
+</ol>
+</div>
+<div id="pregunta-3" class="section level2">
+<h2>Pregunta 3</h2>
+<p>Use los datos en el archivo <em>motral2012.csv</em>, que contienen una muestra de personas en edad de trabajar de México. Estimará un modelo Tobit para explicar los factores que afectan la oferta laboral femenina. En estos datos la variable <strong>hrsocup</strong> registra las horas trabajadas a la semana.</p>
+<ol style="list-style-type: lower-alpha">
+<li><p>[2 punto] ¿Qué proporción de la muestra femenina reporta horas trabajadas iguales a cero? Cuando la variable <strong>sex==2</strong> se trata de una mujer.</p>
+<p><em>Si hacemos una dummy de horas positivas, al sacarle la media obtenemos la proporción. Aquí uso la función <em>stat.desc</em> de la librería <em>pastecs</em> para obtener estadística descriptiva:</em></p>
+<pre class="r"><code>data.salarios&lt;-read_csv(&quot;./motral2012.csv&quot;,
+                      locale = locale(encoding = &quot;latin1&quot;)) 
+
+#1a % de mujeres con horas igua a cero
+data.salarios &lt;- data.salarios %&gt;% 
+  filter(sex==2) %&gt;% 
+  mutate(zerohrs=ifelse(hrsocup==0,1,0))
+
+#La media de la dummy zerohrs da el porcentaje de mujeres con horas cero
+stat.desc(data.salarios$zerohrs)
+##      nbr.val     nbr.null       nbr.na          min          max        range 
+## 2.625000e+03 1.699000e+03 0.000000e+00 0.000000e+00 1.000000e+00 1.000000e+00 
+##          sum       median         mean      SE.mean CI.mean.0.95          var 
+## 9.260000e+02 0.000000e+00 3.527619e-01 9.328052e-03 1.829108e-02 2.284080e-01 
+##      std.dev     coef.var 
+## 4.779204e-01 1.354796e+00</code></pre></li>
+<li><p>[3 puntos] Se desea estimar el efecto de los años de educación (<strong>anios_esc</strong>) sobre la oferta laboral femenina controlando por el estado marital (<strong>casada</strong>), la edad (<strong>eda</strong>) y el número de hijos (<strong>n_hij</strong>) como una variable continua. En los datos, <strong>e_con</strong> toma el valor de 5 para las personas casadas. Genere la variable dummy <strong>casada</strong> que tome el valor de 1 para las mujeres casadas y cero en otro caso. Estime un modelo de MCO usando solo las personas que tienen <strong>hrsocup</strong> mayor que cero, usando solo la población femenina. Reporte errores robustos. ¿Cuál es la interpretación sobre el coeficiente de los años de escolaridad?</p>
+<p><em>El estimar por MCO, un año más de escolaridad se asocia con 0.17 horas trabajadas más a la semana. Sin embargo, este efecto no es estadísticamente significativo.</em></p>
+<pre class="r"><code>#1b Dummy de casada y MCO
+data.salarios &lt;- data.salarios %&gt;% 
+  mutate(casada=ifelse(e_con==5,1,0))
+
+reg1b&lt;-lm(hrsocup ~ anios_esc+casada+eda+n_hij,
+      data=filter(data.salarios,hrsocup&gt;0))
+coeftest(reg1b,
+     vcov = vcovHC(reg1b, &quot;HC1&quot;))[1:4,]
+##                Estimate Std. Error   t value     Pr(&gt;|t|)
+## (Intercept) 36.70129720 1.99116828 18.432042 2.742336e-69
+## anios_esc    0.17465627 0.10353350  1.686954 9.179628e-02
+## casada      -3.52571327 0.89724706 -3.929479 8.855253e-05
+## eda          0.06949593 0.04914655  1.414055 1.575295e-01</code></pre></li>
+<li><p>[3 puntos] ¿Qué problema existe con el modelo planteado en el punto anterior en términos de la selección? ¿Considera que se trata de un caso de censura o de truncamiento?</p>
+<p><em>Podemos racionalizar las horas trabajadas en un modelo microeconómico de oferta laboral. Las horas trabajadas observadas son positivas cuando la solución óptima es una cantidad positiva de horas. Sin embargo, si la solución óptima implicara horas negativas, las horas observadas se codificarían como cero. En este caso tenemos datos censurados en cero. Si existe una relación positiva entre educación y horas trabajadas, al estimar un modelo por MCO usando solo los datos con horas positivas estamos sobreestimando la media condicional pues se habrán omitido del análisis aquellas mujeres cuya solución a su problema de optimización eran horas iguales a cero o negativas.</em></p></li>
+<li><p>[8 puntos] Estime un modelo Tobit de datos censurados. ¿Qué resuelve el modelo Tobit en este caso? Interprete nuevamente el coeficiente sobre los años de escolaridad.</p>
+<p><em>La función tobit permite hacer esto muy fácilmente. Noten que left especifica dónde está la censura. La opción gaussian pone explícito uno de los supuestos críticos del modelo tobit visto en clase: errores normales. Además, se asume homocedasticidad.</em></p>
+<pre class="r"><code>reg1d &lt;- tobit(hrsocup ~ anios_esc+casada+eda+n_hij,
+           left = 0,
+           right = Inf,
+           dist = &quot;gaussian&quot;,
+           data = data.salarios)
+summary(reg1d)
+## 
+## Call:
+## tobit(formula = hrsocup ~ anios_esc + casada + eda + n_hij, left = 0, 
+##     right = Inf, dist = &quot;gaussian&quot;, data = data.salarios)
+## 
+## Observations:
+##          Total  Left-censored     Uncensored Right-censored 
+##           2625            926           1699              0 
+## 
+## Coefficients:
+##              Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)   0.88236    3.19905   0.276  0.78269    
+## anios_esc     0.85530    0.17509   4.885 1.04e-06 ***
+## casada      -10.99515    1.43025  -7.688 1.50e-14 ***
+## eda           0.41621    0.07665   5.430 5.64e-08 ***
+## n_hij        -1.73840    0.55887  -3.111  0.00187 ** 
+## Log(scale)    3.44512    0.01887 182.608  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Scale: 31.35 
+## 
+## Gaussian distribution
+## Number of Newton-Raphson Iterations: 3 
+## Log-likelihood: -9086 on 6 Df
+## Wald-statistic: 127.9 on 4 Df, p-value: &lt; 2.22e-16</code></pre>
+<p><em>El modelo tobit para datos censurados toma en cuenta que hay una masa de ceros en las horas trabajadas para individuos para los que disponemos de sus características en la base de datos. El modelo tobit ajusta la probabilidad de observar esta masa de ceros. El coeficiente estimado será ahora consistente si el modelo está bien especificado, es decir, si el proceso subyacente es lineal en los parámetros y con un error normal homoscedástico (los supuestos de tobit básico). En este caso, un año más de educación se asocia con 0.85 más horas semanales trabajadas, un efecto estadísticamente significativo. Usar MCO subestimaba el efecto de la escolaridad.</em></p></li>
+<li><p>[4 puntos] ¿Cuál es el efecto marginal de un incremento de un año de educación en la oferta laboral? ¿Cómo cambia su respuesta si, en lugar de considerar la variable latente, considera la variable censurada?</p>
+<p><em>El efecto marginal en la variable latente es directamente el coficiente estimado en la parte d., es decir 0.855.</em></p>
+<p><em>El efecto marginal en la media censurada está dado por:</em></p>
+<p><span class="math display">\[\frac{\partial E(y|x)}{\partial x_j}=\beta_j\Phi(x_i&#39;\beta)\]</span></p>
+<p><em>Lo que hice aquí fue calcular este efecto marginal para cada individuo y luego obtener el promedio de los efectos marginales en aquellos individuos con horas positivas.</em></p>
+<pre class="r"><code>#Efecto marginal promedio
+data.salarios &lt;- data.salarios %&gt;%
+  mutate(index1=predict(reg1d,.)) %&gt;% 
+  mutate(phi=pnorm(index1/reg1d$scale)) %&gt;% 
+  mutate(mfx_anis_esc=reg1d$coefficients[2]*phi,
+     mfx_eda=reg1d$coefficients[4]*phi,
+     mfx_n_hij=reg1d$coefficients[5]*phi)
+
+data.salarios %&gt;%
+  filter(hrsocup&gt;0) %&gt;% 
+  summarise(mfx_anis_esc=mean(mfx_anis_esc)) 
+## # A tibble: 1 × 1
+##   mfx_anis_esc
+##          &lt;dbl&gt;
+## 1        0.612</code></pre></li>
+</ol>
+</div>
+<div id="pregunta-4" class="section level2">
+<h2>Pregunta 4</h2>
+<p>Usando los mismos datos <em>motral2012.csv</em> implementará un ejercicio en el mismo espíritu del famoso estudio de Mroz (1987)<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> sobre la oferta laboral femenina. El propósito es estimar la relación entre el salario y el número de horas trabajadas, concentrándonos en la muestra de mujeres.</p>
+<p><strong>En la sección del estimador de Heckman, yo usé las variables que comentamos en clase el martes 10 de octubre, con lo que el modelo estimado por MV y en dos etapas son casi idénticos. Como platicamos, lo que la mayoría de ustedes obtuvo no está mal.</strong></p>
+<ol style="list-style-type: lower-alpha">
+<li><p>[5 puntos] El primer problema al que nos enfrentamos es que el salario será no observado para las mujeres que no trabajan. Estime un modelo lineal para el log del salario por hora, <strong>ing_x_hrs</strong>, usando las variables <strong>anios_esc</strong>, <strong>eda</strong>, <strong>n_hij</strong>, el cuadrado de <strong>n_hij</strong>, <strong>busqueda</strong> y <strong>casada</strong>, usando la submuestra de mujeres con salario por hora positivo. Dichas variables representan los años de escolaridad, la edad, el número de hijos, el cuadrado del número de hijos, si la persona buscó trabajo recientemente y si la persona es casada, respectivamente. Use los coeficientes estimados para imputar el ingreso por hora, faltante para las mujeres que reportan 0 en las horas trabajadas.</p>
+<p><em>Imputamos el salario faltante:</em></p>
+<pre class="r"><code>data.salarios&lt;-read_csv(&quot;./motral2012.csv&quot;,
+                    locale = locale(encoding = &quot;latin1&quot;)) %&gt;%
+  filter(sex==2) %&gt;% 
+  mutate(casada=ifelse(e_con==5,1,0))
+
+#Log de salario ly
+data.salarios &lt;- data.salarios %&gt;% 
+  mutate(ly=ifelse(ing_x_hrs&gt;0,log(ing_x_hrs),NA)) 
+
+#Modelo lineal
+reg2a &lt;- lm(ly~anios_esc+casada+eda+n_hij+n_hij^2+busqueda,
+          data=data.salarios)
+
+#Imputación
+data.salarios &lt;- data.salarios %&gt;% 
+  mutate(lyhat = predict(reg2a, .)) %&gt;% 
+  mutate(ly=ifelse(is.na(ly),lyhat,ly))</code></pre></li>
+<li><p>[5 puntos] Use <em>heckit</em> de la librería <em>sampleSelection</em> para estimar por máxima verosimilitud un <em>heckit</em> para las horas trabajadas <strong>hrsocup</strong>. En la ecuación de selección (si la persona trabaja o no) incluya como variable explicativa el salario por hora (imputado para las mujeres que no trabajan), además de <strong>anios_esc</strong>, <strong>eda</strong>, <strong>n_hij</strong> y <strong>casada</strong>. En la ecuación de horas, incluya los mismos regresores, excepto <strong>n_hij</strong>.</p>
+<p><em>La función heckit permite estimar el modelo de Heckman por máxima verosimilitud de manera muy simple. Hay que especificar method=“ml” para que la estimación sea por máxima verosimilitud:</em></p>
+<pre class="r"><code>data.salarios &lt;- data.salarios %&gt;% 
+  mutate(trabaja=ifelse(hrsocup&gt;0,1,0)) %&gt;% 
+  mutate(trabaja=factor(trabaja,levels=c(0,1)))
+
+reg2b &lt;- heckit(trabaja ~ anios_esc+casada+eda+ly+n_hij+n_hij^2+busqueda,
+            hrsocup ~ anios_esc+casada+eda+ly,
+            method=&quot;ml&quot;,
+            data = data.salarios)
+summary(reg2b)
+## --------------------------------------------
+## Tobit 2 model (sample selection model)
+## Maximum Likelihood estimation
+## Newton-Raphson maximisation, 3 iterations
+## Return code 8: successive function values within relative tolerance limit (reltol)
+## Log-Likelihood: -7181.675 
+## 2625 observations (926 censored and 1699 observed)
+## 14 free parameters (df = 2611)
+## Probit selection equation:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -2.583614   0.448320  -5.763 9.24e-09 ***
+## anios_esc    0.005346   0.020341   0.263    0.793    
+## casada      -0.213125   0.145135  -1.468    0.142    
+## eda         -0.003391   0.008137  -0.417    0.677    
+## ly          -0.004236   0.133344  -0.032    0.975    
+## n_hij        0.023985   0.058900   0.407    0.684    
+## busqueda     2.406669   0.104595  23.009  &lt; 2e-16 ***
+## Outcome equation:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 55.62469    2.17656  25.556  &lt; 2e-16 ***
+## anios_esc    1.04819    0.09995  10.487  &lt; 2e-16 ***
+## casada      -3.58856    0.77967  -4.603 4.37e-06 ***
+## eda          0.11614    0.03902   2.977  0.00294 ** 
+## ly          -9.83418    0.60389 -16.285  &lt; 2e-16 ***
+##    Error terms:
+##       Estimate Std. Error t value Pr(&gt;|t|)    
+## sigma  14.8579     0.2591  57.350   &lt;2e-16 ***
+## rho    -0.1606     0.1964  -0.818    0.414    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## --------------------------------------------</code></pre></li>
+<li><p>[10 puntos] Estime ahora el <em>heckit</em> en dos pasos, <em>a mano</em>. Es decir, siga los siguientes pasos: i) estime un probit para la ecuación de selección y obtenga el índice <span class="math inline">\(x_i&#39;\hat{\beta}\)</span>; ii) calcule el inverso de la razón de Mills <span class="math inline">\(\lambda_i(x_i&#39;\hat{\beta})\)</span>; y iii) estime por MCO la ecuación para las horas trabajadas con la submuestra que tiene horas trabajadas positivas, incluyendo como regresor el inverso de la razón de Mills estimado y el resto de los regresores.</p>
+<p>Compare los coeficientes y los errores estándar obtenidos en esta parte con los de la parte b. ¿Por qué son iguales o por qué difieren?</p>
+<p><em>Estimamos ahora el heckit </em>a mano<em>:</em></p>
+<pre class="r"><code>#Probit
+mod.probit &lt;- glm(trabaja ~ anios_esc+casada+eda+ly+n_hij+n_hij^2+busqueda,
+              family = binomial(link = &quot;probit&quot;),
+              data = data.salarios)
+
+#Predicción del índice y cálculo de IMR
+data.salarios &lt;- data.salarios %&gt;% 
+  mutate(index = predict(mod.probit, .)) %&gt;% 
+  mutate(imr = dnorm(index)/pnorm(index))
+
+#Segunda etapa
+reg2c &lt;- lm(hrsocup ~ anios_esc+casada+eda+ly+imr,
+        data=filter(data.salarios,trabaja==1))
+
+summary(reg2c)
+## 
+## Call:
+## lm(formula = hrsocup ~ anios_esc + casada + eda + ly + imr, data = filter(data.salarios, 
+##     trabaja == 1))
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -46.172 -10.085   1.915   9.253  57.689 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 55.68676    2.17948  25.550  &lt; 2e-16 ***
+## anios_esc    1.04814    0.10000  10.481  &lt; 2e-16 ***
+## casada      -3.56927    0.78057  -4.573 5.17e-06 ***
+## eda          0.11621    0.03904   2.977  0.00296 ** 
+## ly          -9.82971    0.60406 -16.273  &lt; 2e-16 ***
+## imr         -3.94669    3.62684  -1.088  0.27667    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 14.86 on 1693 degrees of freedom
+## Multiple R-squared:  0.1563, Adjusted R-squared:  0.1539 
+## F-statistic: 62.75 on 5 and 1693 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p><em>Para comparar los coeficientes, usé la función stargazer del paquete del mismo nombre:</em></p>
+<pre class="r"><code>#El heckit por MV y en dos etapas coinciden
+
+stargazer(reg2b, reg2c,    
+      title=&quot;Comparación de heckit con la función heckit y a mano&quot;,
+      type=&quot;text&quot;, 
+      df=FALSE,
+      digits=4)
+## 
+## Comparación de heckit con la función heckit y a mano
+## ================================================
+##                         Dependent variable:     
+##                     ----------------------------
+##                               hrsocup           
+##                        Heckman          OLS     
+##                       selection                 
+##                          (1)            (2)     
+## ------------------------------------------------
+## anios_esc             1.0482***      1.0481***  
+##                        (0.0999)      (0.1000)   
+##                                                 
+## casada                -3.5886***    -3.5693***  
+##                        (0.7797)      (0.7806)   
+##                                                 
+## eda                   0.1161***      0.1162***  
+##                        (0.0390)      (0.0390)   
+##                                                 
+## ly                    -9.8342***    -9.8297***  
+##                        (0.6039)      (0.6041)   
+##                                                 
+## imr                                   -3.9467   
+##                                      (3.6268)   
+##                                                 
+## Constant              55.6247***    55.6868***  
+##                        (2.1766)      (2.1795)   
+##                                                 
+## ------------------------------------------------
+## Observations            2,625          1,699    
+## R2                      0.1563                  
+## Adjusted R2             0.1539                  
+## Residual Std. Error                   14.8614   
+## F Statistic                         62.7490***  
+## ================================================
+## Note:                *p&lt;0.1; **p&lt;0.05; ***p&lt;0.01</code></pre>
+<p><em>La magnitud de los coeficientes es práctiamente la misma entre el modelo estimado por máxima verosimilitud y con un procedimiento en dos etapas a mano. En este ejemplo las diferencias son sutiles, aunque recordemos que en general la estimación por MV es más eficiente si la verosimilitud está bien planteada.</em></p></li>
+</ol>
+</div>
+<div id="pregunta-5-modelo-poisson-inflado-en-cero" class="section level2">
+<h2>Pregunta 5: modelo Poisson inflado en cero</h2>
+<p>Otra manera de resolver el problema del exceso de ceros que a veces nos molesta en los modelos Poisson es usar un modelo Poisson inflado en cero (CT, p. 681). La idea es introducir un proceso binario con densidad <span class="math inline">\(f_1(\cdot)\)</span> para modelar la probabilidad de que <span class="math inline">\(y=0\)</span> y luego una densidad de conteo <span class="math inline">\(f_2(\cdot)\)</span>. Si el proceso binario toma el valor de 0, con probabilidad <span class="math inline">\(f_1(0)\)</span>, entonces <span class="math inline">\(y=0\)</span>, pero si el proceso binario toma el valor de 1, entonces <span class="math inline">\(y={0,1,2,\ldots}\)</span>. Note que podemos entonces observar ceros por dos razones, por el proceso binomial o por el conteo.</p>
+<p>Un modelo inflado en cero tendrá como densidad:</p>
+<p><span class="math display">\[
+g(y)=
+\begin{cases}
+f_1(0)+(1-f_1(0))f_2(0) &amp; \text{si }y=0 \\
+(1-f_1(0))f_2(y)&amp; \text{si }y\geq 1
+\end{cases}
+\]</span></p>
+<p>Considere la variable aleatoria <span class="math inline">\(Y\)</span> con observaciones iid que sigue una distribución Poisson con parámetro <span class="math inline">\(\lambda\)</span>. Y considere una variable un proceso binomial tal que <span class="math inline">\(\pi\)</span> es la probabilidad de que el conteo no se realice. Entonces:</p>
+<p><span class="math display">\[
+g(y)=
+\begin{cases}
+\pi+(1-\pi)f_2(0) &amp; \text{si }y=0 \\
+(1-\pi)f_2(y)&amp; \text{si }y\geq 1
+\end{cases}
+\]</span></p>
+<ol style="list-style-type: lower-alpha">
+<li><p>[4 puntos] Termine de especializar la expresión anterior unsando la distribución Poisson para <span class="math inline">\(f_2(\cdot)\)</span> para obtener la función de masa de probabilidad del modelo Poisson inflado en cero <span class="math inline">\(g(y|\lambda, \pi)\)</span>.</p>
+<p><em>En el caso particular de un modelo Poisson, sabemos que <span class="math inline">\(f_2(0)=P(Y=0)=exp(-\lambda)\)</span>. Definiendo la probabilidad de observar un conteo cero como <span class="math inline">\(\pi\)</span>, la función de masa de probabilidad del modelo inflado en cero es:</em></p>
+<p><span class="math display">\[
+g(y)=
+\begin{cases}
+\pi+(1-\pi)exp(-\lambda) \quad\text{si }y=0 \\
+(1-\pi)\frac{\lambda^y exp(-\lambda)}{y!} \quad\text{si } y \geq1 \\
+\end{cases}
+\]</span></p></li>
+<li><p>[7 puntos] Provea una expresión para la función de verosimilitud <span class="math inline">\(L(\lambda,\pi)=\prod_{i=1}^N g(y_i|\lambda, \pi)\)</span>. Una sugerencia para simplificar sus cálculos es definir una variable <span class="math inline">\(X\)</span> igual al numero de veces que <span class="math inline">\(Y_i\)</span> que toma el valor de cero.</p>
+<p><em>La función de verosimilitud del problema es:</em></p>
+<p><span class="math display">\[L(\pi,\lambda,y_i)=\prod_i P(Y_i=y_i)\]</span></p>
+<p><em>Con las formas específicas para el modelo Poisson inflado en cero:</em></p>
+<p><span class="math display">\[L(\pi,\lambda,y_i)=\prod_{i\in y_i=0}\left(\pi+(1-\pi)exp(-\lambda) \right) \prod_{i\in y_i&gt;0}\left((1-\pi)\frac{\lambda^{y_i} exp(-\lambda)}{y!}\right)\]</span></p>
+<p><em>Haciendo <span class="math inline">\(X\)</span> el número de veces que <span class="math inline">\(y_i\)</span> toma el valor de cero, el primer producto es <span class="math inline">\(\left(\pi+(1-\pi)exp(-\lambda) \right)\)</span> elevado a la potencia <span class="math inline">\(X\)</span>.</em></p>
+<p><em>¿Cuántos términos distintos de cero quedan? Quedan <span class="math inline">\(n-X\)</span>. El segundo producto en la verosimilitud es:</em></p>
+<p><span class="math display">\[\left((1-\pi)exp(-\lambda)\right)^{n-X}\frac{\lambda^{\sum_i y_i}}{\prod_{i\in y_i&gt;0} y!}\]</span></p>
+<p><em>La verosimilitud es por tanto:</em></p>
+<p><span class="math display">\[L(\pi,\lambda,y_i)=\left(\pi+(1-\pi)exp(-\lambda) \right)^X \left((1-\pi)exp(-\lambda)\right)^{n-X}\frac{\lambda^{\sum_i y_i}}{\prod_{i\in y_i&gt;0} y!}\]</span></p></li>
+<li><p>[6 puntos] Provea una expresión para la log verosimilitud del problema, <span class="math inline">\(\mathcal{L}(\lambda,\pi)\)</span>.</p>
+<p><em>Dada la verosimilitud planteada en la parte anterior, la log verosimilitud es:</em></p>
+<p><span class="math display">\[\mathcal{L}(\pi,\lambda,y_i)=X\ln \left(\pi+(1-\pi)exp(-\lambda) \right)+(n-X)\ln(1-\pi)-(n-X)\lambda+n\bar{Y}\ln (\lambda)- \ln\left(\prod_{i\in y_i&gt;0} y! \right)\]</span></p></li>
+<li><p>[8 puntos] Obtenga las condiciones de primer orden que caracterizan la solución del problema de máxima verosimilitud, derivando la log verosimilitud con respecto a <span class="math inline">\(\lambda\)</span> y a <span class="math inline">\(\pi\)</span>.</p>
+<p><em>Tenemos dos parámetros, así que tenemos dos condiciones de primer orden. Derivando la log verosimilitud con respecto a <span class="math inline">\(\pi\)</span> obtenemos:</em></p>
+<p><span class="math display">\[\frac{\partial \mathcal{L}}{\partial \pi}=\frac{X}{\pi+(1-\pi)exp(-\lambda)}(1-exp(-\lambda))-\frac{n-X}{1-\pi}=0\]</span></p>
+<p><em>La primer condición (A) es:</em></p>
+<p><span class="math display">\[\frac{X(1-exp(-\lambda))(1-\pi)}{\pi+(1-\pi)exp(-\lambda)}=n-X\quad\quad\ldots(A)\]</span></p>
+<p><em>Ahora derivando la log verosimilitud con respecto a <span class="math inline">\(\lambda\)</span>:</em></p>
+<p><span class="math display">\[\frac{\partial \mathcal{L}}{\partial \lambda}=-\frac{X}{\pi+(1-\pi)exp(-\lambda)}(1-\pi)exp(-\lambda)-(n-X)+\frac{n\bar{Y}}{\lambda}=0\]</span></p>
+<p><em>La segunda condición (B) es:</em></p>
+<p><span class="math display">\[\frac{X(1-\pi)exp(-\lambda)}{\pi+(1-\pi)exp(-\lambda)}+(n-X)=\frac{n\bar{Y}}{\lambda}\quad\quad\ldots(B)\]</span></p>
+<p><em><span class="math inline">\((\hat{\pi}_{MV},\hat{\lambda}_{MV})\)</span> son los valores de los parámetros que resulven el sistema dado por (A) y (B).</em></p></li>
+</ol>
+</div>
+<div class="footnotes footnotes-end-of-document">
+<hr />
+<ol>
+<li id="fn1"><p>Mroz, T. A. (1987). <a href="https://www.jstor.org/stable/1911029?casa_token=Uwxeul7XeBkAAAAA%3AyOzMP-SP9bdQNxw1FwyVjnEJt3w2ShyTtiinMVL6RZnpxKeehfas96e2ETxA6us20xyQG-NUF71svQugl78mx6vG2oJ2k7U39TtJn6P6dq-iTH2aDWsH&amp;seq=1#metadata_info_tab_contents">The sensitivity of an empirical model of married women’s hours of work to economic and statistical assumptions</a>. <em>Econometrica</em>: Journal of the econometric society, 765-799.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
