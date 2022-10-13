@@ -1,0 +1,302 @@
+---
+title: "VI y MGM con matrices"
+summary: " "
+weight: 2
+type: book
+toc: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=T,
+                      warning = F,
+                      message = F)
+
+rm(list = ls())
+options(scipen=999) # Prevenir notación científica
+
+library(tidyverse)
+library(janitor)
+library(sandwich)
+library(clubSandwich)
+library(lfe)
+library(AER)
+library(gmm)
+library(stargazer)
+```
+
+[Script de esta sesión](/notas/iv_mgm.R)
+
+[ingresos_iv.csv](/notas/ingresos_iv.csv)
+
+
+Usaremos los datos del estudio de Card sobre rendimientos a la educación para mostrar cómo funcionan las expresiones para estimar el vector de coeficientes y los errores estándar de los distintos estimadores de VI.
+
+```{r}
+data.ingresos <- read_csv("ingresos_iv.csv",
+                          locale = locale(encoding = "latin1"))
+```
+## Modelo exactamente identificado
+
+Para tener una referencia, veamos lo que obtenemos con *ivreg* del paquete *AER*. Nuestro modelo tiene cinco regresores más una constante:
+
+```{r}
+iv_ei <- ivreg(lwage ~ educ + exper + expersq + black + south |
+                 . - educ + nearc4, data = data.ingresos)
+
+stargazer(iv_ei,
+          type="text",
+          digits = 4)
+```
+
+Repliquemos lo anterior con matrices. Primero construimos $X$, $Y$ y $Z$:
+
+```{r}
+data.ingresos <- data.ingresos %>% 
+  mutate(constant=1)
+
+X <- data.matrix(select(data.ingresos, constant, educ, exper, expersq, black,
+              south),
+       rownames.force = T)
+
+Y <- data.matrix(select(data.ingresos,lwage),
+       rownames.force = T)
+
+Z <- data.matrix(select(data.ingresos, constant, nearc4, exper, expersq, black,
+              south),
+       rownames.force = T)
+
+N <- nrow(X)
+k <- ncol(X) # incluyendo la constante
+```
+
+
+
+Estimamos beta
+
+```{r}
+b <- solve(t(Z) %*% X) %*% t(Z) %*% Y
+b
+```
+
+La matriz de varianzas, asumiendo homocedasticidad:
+
+```{r}
+u_hat <- Y-X%*%b
+sigma2 <- as.numeric((1/N)*t(u_hat)%*%u_hat)
+```
+
+Construimos la matriz de proyección
+
+```{r}
+P <- Z%*%(solve(t(Z)%*%Z))%*%t(Z)
+```
+
+La matriz de varianzas que construye R por defecto multiplica por $N/n-k$:
+
+```{r}
+V=sigma2*solve(t(X)%*%P%*%X)*(N/(N-k))
+sqrt(diag(V))
+```
+
+Comparamos el coeficiente y el de educación con lo obtenido con *ivreg*:
+
+```{r}
+stargazer(iv_ei,
+          type="text",
+          digits = 4)
+```
+
+Si permitimos una heterocedasticidad arbitraria:
+
+```{r}
+stargazer(iv_ei, iv_ei, iv_ei,
+          type="text",
+          se = list(NULL,
+                    sqrt(diag(vcovHC(iv_ei, type = "const"))),
+                    sqrt(diag(vcovHC(iv_ei, type = "HC0")))),
+          digits = 4,
+          column.labels = c("VI, hom., ivreg",
+                            "VI, hom., ivreg",
+                            "VI, het., ivreg"))
+```
+
+Repliquemos esto con matrices, obteniendo primero la matriz $D$, que colecciona los errores ajustados, y luego la matriz $S$:
+
+```{r}
+D <- diag(as.vector((Y-X%*%b)^2))
+S_hat <- (1/(N)) * t(Z) %*% D %*% Z 
+```
+
+Noten que HC0 no hace corrección por muestras pequeñas:
+
+```{r}
+Vr= N*solve(t(X)%*%Z%*%solve(t(Z)%*%Z)%*%t(Z)%*%X)%*%(t(X)%*%Z%*%solve(t(Z)%*%Z)%*%S_hat%*%solve(t(Z)%*%Z)%*%t(Z)%*%X)%*%solve(t(X)%*%Z%*%solve(t(Z)%*%Z)%*%t(Z)%*%X)
+sqrt(diag(Vr))
+```
+
+Comparamos:
+
+```{r}
+stargazer(iv_ei, iv_ei, iv_ei,
+          type="text",
+          se = list(NULL,
+                    sqrt(diag(vcovHC(iv_ei, type = "const"))),
+                    sqrt(diag(vcovHC(iv_ei, type = "HC0")))),
+          digits = 4,
+          column.labels = c("VI, hom., ivreg",
+                            "VI, hom., ivreg",
+                            "VI, het., ivreg"))
+```
+
+
+
+## Modelo sobreidentificado
+
+Consideremos ahora el modelo sobreidentificado con dos instrumentos:
+
+```{r}
+iv_si <- ivreg(lwage ~ educ + exper + expersq + black + south |
+                 . - educ + nearc4 + nearc2, data = data.ingresos)
+
+stargazer(iv_si,
+          type="text",
+          digits = 4)
+```
+
+Construyamos la nueva matriz de instrumentos y la nueva matriz de proyección para obtener el vector de coeficientes:
+
+```{r}
+Z <- data.matrix(select(data.ingresos, constant, nearc4, nearc2, exper, expersq, black,
+                        south),
+                 rownames.force = T)
+
+P <- Z%*%(solve(t(Z)%*%Z))%*%t(Z)
+
+b <- solve(t(X)%*%P%*%X) %*% t(X)%*%P%*%Y
+b
+```
+
+La matriz de varianzas se estima igual que en el caso exactamente identificado:
+
+```{r}
+u_hat <- Y-X%*%b
+sigma2 <- as.numeric((1/N)*t(u_hat)%*%u_hat)
+```
+
+Noten que R hace correción de muestras finitas:
+
+```{r}
+V=sigma2*solve(t(X)%*%P%*%X)*(N/(N-k))
+sqrt(diag(V))
+```
+
+Comparamos:
+
+```{r}
+stargazer(iv_si,
+          digits = 4,
+          type = 'text')
+```
+
+## Estimador de MGM óptimo
+
+Para estimar por el MGM usaremos la librería *gmm* y la función del mismo nombre. La opción *vcov* indica que queremos una matriz robusta a heterocedasticidad y *wmatrix* especifica el estimador óptimo, es decir, donde $W=S^{-1}$.
+
+```{r}
+gmm_opt <- gmm(lwage ~ educ + exper + expersq + black + south,
+               ~ nearc4 + nearc2 + exper + expersq + black + south,
+               vcov = "HAC",
+               wmatrix = "optimal",
+               type = "twoStep",
+               data = data.ingresos)
+```
+
+Repliquemos esto con matrices. Obtenemos el vector de parámetros con alguna matriz subóptima, por ejemplo, la identidad:
+
+```{r}
+r <- k -1 + 2 # 1 endógena y 2 instrumentos
+I <- data.matrix(diag(r))
+
+b1 <- solve(t(X)%*%Z%*%I%*%t(Z)%*%X)%*%t(X)%*%Z%*%I%*%t(Z)%*%Y
+```
+
+Usemos este vector de parámetros para estimar $\hat{S}$:
+
+```{r}
+D <- diag(as.vector((Y-X%*%b1)^2))
+S_hat <- (1/N) * t(Z) %*% D %*% Z 
+```
+
+Y volvamos a estimar el vector de parámetros, ahora usando $W=\hat{S}^{-1}$:
+
+```{r}
+bo <- solve(t(X)%*%Z%*%solve(S_hat)%*%t(Z)%*%X)%*%
+  t(X)%*%Z%*%solve(S_hat)%*%t(Z)%*%Y
+bo
+```
+
+Con este vector de parámetros, obtenemos la matriz de varianzas:
+
+```{r}
+D <- diag(as.vector((Y-X%*%bo)^2))
+S_tilde <- (1/N) * t(Z) %*% D %*% Z 
+
+Vr <- (N)*solve(t(X) %*% Z %*% solve(S_tilde) %*% t(Z) %*% X)
+sqrt(diag(Vr))
+```
+
+Comparamos:
+
+```{r}
+stargazer(gmm_opt,
+          type="text",
+          digits = 4)
+```
+
+## IV es el estimador de MGM para cualquier W
+
+Usemos *gmm* para estimar el modelo exactamente identificado, usando diferentes matrices $W$:
+
+```{r}
+gmm_iv_opt <- gmm(lwage ~ educ + exper + expersq + black + south,
+               ~ nearc4 + exper + expersq + black + south,
+               vcov = "iid",
+               wmatrix = "optimal",
+               type = "twoStep",
+               data = data.ingresos)
+
+gmm_iv_ident <- gmm(lwage ~ educ + exper + expersq + black + south,
+                  ~ nearc4 + exper + expersq + black + south,
+                  vcov = "iid",
+                  wmatrix = "ident",
+                  type = "twoStep",
+                  data = data.ingresos)
+
+stargazer(gmm_iv_opt, gmm_iv_ident,
+          type="text",
+          digits = 4)
+
+```
+
+Regresamos a la matriz $Z$ con un solo instrumento y estimamos el vector de parámetros:
+
+```{r}
+Z <- data.matrix(select(data.ingresos, constant, nearc4, exper, expersq, black,
+                        south),
+                 rownames.force = T)
+```
+
+Estimamos el vector de coeficientes:
+
+```{r}
+b <- solve(t(Z) %*% X) %*% t(Z) %*% Y
+b
+```
+
+El estimador de VI es el estimador de GMM para cualquier matriz $W$ cuando $r=q$:
+
+```{r}
+stargazer(gmm_iv_opt, gmm_iv_ident,
+          type="text",
+          digits = 4)
+```

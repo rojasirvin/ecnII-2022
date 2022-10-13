@@ -1,0 +1,488 @@
+---
+title: "VI y MGM con matrices"
+summary: " "
+weight: 2
+type: book
+toc: false
+---
+
+
+
+<p><a href="/notas/iv_mgm.R">Script de esta sesión</a></p>
+<p><a href="/notas/ingresos_iv.csv">ingresos_iv.csv</a></p>
+<p>Usaremos los datos del estudio de Card sobre rendimientos a la educación para mostrar cómo funcionan las expresiones para estimar el vector de coeficientes y los errores estándar de los distintos estimadores de VI.</p>
+<pre class="r"><code>data.ingresos &lt;- read_csv(&quot;ingresos_iv.csv&quot;,
+                          locale = locale(encoding = &quot;latin1&quot;))</code></pre>
+<div id="modelo-exactamente-identificado" class="section level2">
+<h2>Modelo exactamente identificado</h2>
+<p>Para tener una referencia, veamos lo que obtenemos con <em>ivreg</em> del paquete <em>AER</em>. Nuestro modelo tiene cinco regresores más una constante:</p>
+<pre class="r"><code>iv_ei &lt;- ivreg(lwage ~ educ + exper + expersq + black + south |
+                 . - educ + nearc4, data = data.ingresos)
+
+stargazer(iv_ei,
+          type=&quot;text&quot;,
+          digits = 4)</code></pre>
+<pre><code>## 
+## ===============================================
+##                         Dependent variable:    
+##                     ---------------------------
+##                                lwage           
+## -----------------------------------------------
+## educ                         0.2214***         
+##                              (0.0409)          
+##                                                
+## exper                        0.1439***         
+##                              (0.0187)          
+##                                                
+## expersq                     -0.0024***         
+##                              (0.0004)          
+##                                                
+## black                         -0.0369          
+##                              (0.0458)          
+##                                                
+## south                       -0.0889***         
+##                              (0.0257)          
+##                                                
+## Constant                     2.3248***         
+##                              (0.7072)          
+##                                                
+## -----------------------------------------------
+## Observations                   3,010           
+## R2                            -0.1343          
+## Adjusted R2                   -0.1362          
+## Residual Std. Error     0.4731 (df = 3004)     
+## ===============================================
+## Note:               *p&lt;0.1; **p&lt;0.05; ***p&lt;0.01</code></pre>
+<p>Repliquemos lo anterior con matrices. Primero construimos <span class="math inline">\(X\)</span>, <span class="math inline">\(Y\)</span> y <span class="math inline">\(Z\)</span>:</p>
+<pre class="r"><code>data.ingresos &lt;- data.ingresos %&gt;% 
+  mutate(constant=1)
+
+X &lt;- data.matrix(select(data.ingresos, constant, educ, exper, expersq, black,
+              south),
+       rownames.force = T)
+
+Y &lt;- data.matrix(select(data.ingresos,lwage),
+       rownames.force = T)
+
+Z &lt;- data.matrix(select(data.ingresos, constant, nearc4, exper, expersq, black,
+              south),
+       rownames.force = T)
+
+N &lt;- nrow(X)
+k &lt;- ncol(X) # incluyendo la constante</code></pre>
+<p>Estimamos beta</p>
+<pre class="r"><code>b &lt;- solve(t(Z) %*% X) %*% t(Z) %*% Y
+b</code></pre>
+<pre><code>##                 lwage
+## constant  2.324805209
+## educ      0.221390289
+## exper     0.143933017
+## expersq  -0.002401759
+## black    -0.036938558
+## south    -0.088888463</code></pre>
+<p>La matriz de varianzas, asumiendo homocedasticidad:</p>
+<pre class="r"><code>u_hat &lt;- Y-X%*%b
+sigma2 &lt;- as.numeric((1/N)*t(u_hat)%*%u_hat)</code></pre>
+<p>Construimos la matriz de proyección</p>
+<pre class="r"><code>P &lt;- Z%*%(solve(t(Z)%*%Z))%*%t(Z)</code></pre>
+<p>La matriz de varianzas que construye R por defecto multiplica por <span class="math inline">\(N/n-k\)</span>:</p>
+<pre class="r"><code>V=sigma2*solve(t(X)%*%P%*%X)*(N/(N-k))
+sqrt(diag(V))</code></pre>
+<pre><code>##     constant         educ        exper      expersq        black        south 
+## 0.7071765685 0.0409013368 0.0186980191 0.0004020113 0.0458381726 0.0257238774</code></pre>
+<p>Comparamos el coeficiente y el de educación con lo obtenido con <em>ivreg</em>:</p>
+<pre class="r"><code>stargazer(iv_ei,
+          type=&quot;text&quot;,
+          digits = 4)</code></pre>
+<pre><code>## 
+## ===============================================
+##                         Dependent variable:    
+##                     ---------------------------
+##                                lwage           
+## -----------------------------------------------
+## educ                         0.2214***         
+##                              (0.0409)          
+##                                                
+## exper                        0.1439***         
+##                              (0.0187)          
+##                                                
+## expersq                     -0.0024***         
+##                              (0.0004)          
+##                                                
+## black                         -0.0369          
+##                              (0.0458)          
+##                                                
+## south                       -0.0889***         
+##                              (0.0257)          
+##                                                
+## Constant                     2.3248***         
+##                              (0.7072)          
+##                                                
+## -----------------------------------------------
+## Observations                   3,010           
+## R2                            -0.1343          
+## Adjusted R2                   -0.1362          
+## Residual Std. Error     0.4731 (df = 3004)     
+## ===============================================
+## Note:               *p&lt;0.1; **p&lt;0.05; ***p&lt;0.01</code></pre>
+<p>Si permitimos una heterocedasticidad arbitraria:</p>
+<pre class="r"><code>stargazer(iv_ei, iv_ei, iv_ei,
+          type=&quot;text&quot;,
+          se = list(NULL,
+                    sqrt(diag(vcovHC(iv_ei, type = &quot;const&quot;))),
+                    sqrt(diag(vcovHC(iv_ei, type = &quot;HC0&quot;)))),
+          digits = 4,
+          column.labels = c(&quot;VI, hom., ivreg&quot;,
+                            &quot;VI, hom., ivreg&quot;,
+                            &quot;VI, het., ivreg&quot;))</code></pre>
+<pre><code>## 
+## ===============================================================================
+##                                               Dependent variable:              
+##                                 -----------------------------------------------
+##                                                      lwage                     
+##                                 VI, hom., ivreg VI, hom., ivreg VI, het., ivreg
+##                                       (1)             (2)             (3)      
+## -------------------------------------------------------------------------------
+## educ                               0.2214***       0.2214***       0.2214***   
+##                                    (0.0409)        (0.0409)        (0.0403)    
+##                                                                                
+## exper                              0.1439***       0.1439***       0.1439***   
+##                                    (0.0187)        (0.0187)        (0.0185)    
+##                                                                                
+## expersq                           -0.0024***      -0.0024***      -0.0024***   
+##                                    (0.0004)        (0.0004)        (0.0004)    
+##                                                                                
+## black                               -0.0369         -0.0369         -0.0369    
+##                                    (0.0458)        (0.0458)        (0.0443)    
+##                                                                                
+## south                             -0.0889***      -0.0889***      -0.0889***   
+##                                    (0.0257)        (0.0257)        (0.0254)    
+##                                                                                
+## Constant                           2.3248***       2.3248***       2.3248***   
+##                                    (0.7072)        (0.7072)        (0.6958)    
+##                                                                                
+## -------------------------------------------------------------------------------
+## Observations                         3,010           3,010           3,010     
+## R2                                  -0.1343         -0.1343         -0.1343    
+## Adjusted R2                         -0.1362         -0.1362         -0.1362    
+## Residual Std. Error (df = 3004)     0.4731          0.4731          0.4731     
+## ===============================================================================
+## Note:                                               *p&lt;0.1; **p&lt;0.05; ***p&lt;0.01</code></pre>
+<p>Repliquemos esto con matrices, obteniendo primero la matriz <span class="math inline">\(D\)</span>, que colecciona los errores ajustados, y luego la matriz <span class="math inline">\(S\)</span>:</p>
+<pre class="r"><code>D &lt;- diag(as.vector((Y-X%*%b)^2))
+S_hat &lt;- (1/(N)) * t(Z) %*% D %*% Z </code></pre>
+<p>Noten que HC0 no hace corrección por muestras pequeñas:</p>
+<pre class="r"><code>Vr= N*solve(t(X)%*%Z%*%solve(t(Z)%*%Z)%*%t(Z)%*%X)%*%(t(X)%*%Z%*%solve(t(Z)%*%Z)%*%S_hat%*%solve(t(Z)%*%Z)%*%t(Z)%*%X)%*%solve(t(X)%*%Z%*%solve(t(Z)%*%Z)%*%t(Z)%*%X)
+sqrt(diag(Vr))</code></pre>
+<pre><code>##     constant         educ        exper      expersq        black        south 
+## 0.6957801830 0.0403033738 0.0185093210 0.0004295362 0.0442735580 0.0253631935</code></pre>
+<p>Comparamos:</p>
+<pre class="r"><code>stargazer(iv_ei, iv_ei, iv_ei,
+          type=&quot;text&quot;,
+          se = list(NULL,
+                    sqrt(diag(vcovHC(iv_ei, type = &quot;const&quot;))),
+                    sqrt(diag(vcovHC(iv_ei, type = &quot;HC0&quot;)))),
+          digits = 4,
+          column.labels = c(&quot;VI, hom., ivreg&quot;,
+                            &quot;VI, hom., ivreg&quot;,
+                            &quot;VI, het., ivreg&quot;))</code></pre>
+<pre><code>## 
+## ===============================================================================
+##                                               Dependent variable:              
+##                                 -----------------------------------------------
+##                                                      lwage                     
+##                                 VI, hom., ivreg VI, hom., ivreg VI, het., ivreg
+##                                       (1)             (2)             (3)      
+## -------------------------------------------------------------------------------
+## educ                               0.2214***       0.2214***       0.2214***   
+##                                    (0.0409)        (0.0409)        (0.0403)    
+##                                                                                
+## exper                              0.1439***       0.1439***       0.1439***   
+##                                    (0.0187)        (0.0187)        (0.0185)    
+##                                                                                
+## expersq                           -0.0024***      -0.0024***      -0.0024***   
+##                                    (0.0004)        (0.0004)        (0.0004)    
+##                                                                                
+## black                               -0.0369         -0.0369         -0.0369    
+##                                    (0.0458)        (0.0458)        (0.0443)    
+##                                                                                
+## south                             -0.0889***      -0.0889***      -0.0889***   
+##                                    (0.0257)        (0.0257)        (0.0254)    
+##                                                                                
+## Constant                           2.3248***       2.3248***       2.3248***   
+##                                    (0.7072)        (0.7072)        (0.6958)    
+##                                                                                
+## -------------------------------------------------------------------------------
+## Observations                         3,010           3,010           3,010     
+## R2                                  -0.1343         -0.1343         -0.1343    
+## Adjusted R2                         -0.1362         -0.1362         -0.1362    
+## Residual Std. Error (df = 3004)     0.4731          0.4731          0.4731     
+## ===============================================================================
+## Note:                                               *p&lt;0.1; **p&lt;0.05; ***p&lt;0.01</code></pre>
+</div>
+<div id="modelo-sobreidentificado" class="section level2">
+<h2>Modelo sobreidentificado</h2>
+<p>Consideremos ahora el modelo sobreidentificado con dos instrumentos:</p>
+<pre class="r"><code>iv_si &lt;- ivreg(lwage ~ educ + exper + expersq + black + south |
+                 . - educ + nearc4 + nearc2, data = data.ingresos)
+
+stargazer(iv_si,
+          type=&quot;text&quot;,
+          digits = 4)</code></pre>
+<pre><code>## 
+## ===============================================
+##                         Dependent variable:    
+##                     ---------------------------
+##                                lwage           
+## -----------------------------------------------
+## educ                         0.2403***         
+##                              (0.0406)          
+##                                                
+## exper                        0.1517***         
+##                              (0.0188)          
+##                                                
+## expersq                     -0.0024***         
+##                              (0.0004)          
+##                                                
+## black                         -0.0183          
+##                              (0.0461)          
+##                                                
+## south                       -0.0807***         
+##                              (0.0263)          
+##                                                
+## Constant                     1.9981***         
+##                              (0.7016)          
+##                                                
+## -----------------------------------------------
+## Observations                   3,010           
+## R2                            -0.2469          
+## Adjusted R2                   -0.2490          
+## Residual Std. Error     0.4960 (df = 3004)     
+## ===============================================
+## Note:               *p&lt;0.1; **p&lt;0.05; ***p&lt;0.01</code></pre>
+<p>Construyamos la nueva matriz de instrumentos y la nueva matriz de proyección para obtener el vector de coeficientes:</p>
+<pre class="r"><code>Z &lt;- data.matrix(select(data.ingresos, constant, nearc4, nearc2, exper, expersq, black,
+                        south),
+                 rownames.force = T)
+
+P &lt;- Z%*%(solve(t(Z)%*%Z))%*%t(Z)
+
+b &lt;- solve(t(X)%*%P%*%X) %*% t(X)%*%P%*%Y
+b</code></pre>
+<pre><code>##                 lwage
+## constant  1.998075910
+## educ      0.240315358
+## exper     0.151707063
+## expersq  -0.002409864
+## black    -0.018284247
+## south    -0.080744611</code></pre>
+<p>La matriz de varianzas se estima igual que en el caso exactamente identificado:</p>
+<pre class="r"><code>u_hat &lt;- Y-X%*%b
+sigma2 &lt;- as.numeric((1/N)*t(u_hat)%*%u_hat)</code></pre>
+<p>Noten que R hace correción de muestras finitas:</p>
+<pre class="r"><code>V=sigma2*solve(t(X)%*%P%*%X)*(N/(N-k))
+sqrt(diag(V))</code></pre>
+<pre><code>##     constant         educ        exper      expersq        black        south 
+## 0.7015640369 0.0405697227 0.0187547264 0.0004214487 0.0460663648 0.0262991839</code></pre>
+<p>Comparamos:</p>
+<pre class="r"><code>stargazer(iv_si,
+          digits = 4,
+          type = &#39;text&#39;)</code></pre>
+<pre><code>## 
+## ===============================================
+##                         Dependent variable:    
+##                     ---------------------------
+##                                lwage           
+## -----------------------------------------------
+## educ                         0.2403***         
+##                              (0.0406)          
+##                                                
+## exper                        0.1517***         
+##                              (0.0188)          
+##                                                
+## expersq                     -0.0024***         
+##                              (0.0004)          
+##                                                
+## black                         -0.0183          
+##                              (0.0461)          
+##                                                
+## south                       -0.0807***         
+##                              (0.0263)          
+##                                                
+## Constant                     1.9981***         
+##                              (0.7016)          
+##                                                
+## -----------------------------------------------
+## Observations                   3,010           
+## R2                            -0.2469          
+## Adjusted R2                   -0.2490          
+## Residual Std. Error     0.4960 (df = 3004)     
+## ===============================================
+## Note:               *p&lt;0.1; **p&lt;0.05; ***p&lt;0.01</code></pre>
+</div>
+<div id="estimador-de-mgm-óptimo" class="section level2">
+<h2>Estimador de MGM óptimo</h2>
+<p>Para estimar por el MGM usaremos la librería <em>gmm</em> y la función del mismo nombre. La opción <em>vcov</em> indica que queremos una matriz robusta a heterocedasticidad y <em>wmatrix</em> especifica el estimador óptimo, es decir, donde <span class="math inline">\(W=S^{-1}\)</span>.</p>
+<pre class="r"><code>gmm_opt &lt;- gmm(lwage ~ educ + exper + expersq + black + south,
+               ~ nearc4 + nearc2 + exper + expersq + black + south,
+               vcov = &quot;HAC&quot;,
+               wmatrix = &quot;optimal&quot;,
+               type = &quot;twoStep&quot;,
+               data = data.ingresos)</code></pre>
+<p>Repliquemos esto con matrices. Obtenemos el vector de parámetros con alguna matriz subóptima, por ejemplo, la identidad:</p>
+<pre class="r"><code>r &lt;- k -1 + 2 # 1 endógena y 2 instrumentos
+I &lt;- data.matrix(diag(r))
+
+b1 &lt;- solve(t(X)%*%Z%*%I%*%t(Z)%*%X)%*%t(X)%*%Z%*%I%*%t(Z)%*%Y</code></pre>
+<p>Usemos este vector de parámetros para estimar <span class="math inline">\(\hat{S}\)</span>:</p>
+<pre class="r"><code>D &lt;- diag(as.vector((Y-X%*%b1)^2))
+S_hat &lt;- (1/N) * t(Z) %*% D %*% Z </code></pre>
+<p>Y volvamos a estimar el vector de parámetros, ahora usando <span class="math inline">\(W=\hat{S}^{-1}\)</span>:</p>
+<pre class="r"><code>bo &lt;- solve(t(X)%*%Z%*%solve(S_hat)%*%t(Z)%*%X)%*%
+  t(X)%*%Z%*%solve(S_hat)%*%t(Z)%*%Y
+bo</code></pre>
+<pre><code>##                 lwage
+## constant  2.022002957
+## educ      0.238977697
+## exper     0.150984069
+## expersq  -0.002402233
+## black    -0.021611174
+## south    -0.081455256</code></pre>
+<p>Con este vector de parámetros, obtenemos la matriz de varianzas:</p>
+<pre class="r"><code>D &lt;- diag(as.vector((Y-X%*%bo)^2))
+S_tilde &lt;- (1/N) * t(Z) %*% D %*% Z 
+
+Vr &lt;- (N)*solve(t(X) %*% Z %*% solve(S_tilde) %*% t(Z) %*% X)
+sqrt(diag(Vr))</code></pre>
+<pre><code>##     constant         educ        exper      expersq        black        south 
+## 0.6925828141 0.0401027981 0.0186490442 0.0004500697 0.0448916940 0.0258844828</code></pre>
+<p>Comparamos:</p>
+<pre class="r"><code>stargazer(gmm_opt,
+          type=&quot;text&quot;,
+          digits = 4)</code></pre>
+<pre><code>## 
+## ========================================
+##                  Dependent variable:    
+##              ---------------------------
+##                         lwage           
+## ----------------------------------------
+## educ                  0.2391***         
+##                       (0.0446)          
+##                                         
+## exper                 0.1506***         
+##                       (0.0205)          
+##                                         
+## expersq              -0.0024***         
+##                       (0.0004)          
+##                                         
+## black                  -0.0216          
+##                       (0.0508)          
+##                                         
+## south                -0.0813***         
+##                       (0.0281)          
+##                                         
+## Constant              2.0217***         
+##                       (0.7715)          
+##                                         
+## ----------------------------------------
+## Observations            3,010           
+## ========================================
+## Note:        *p&lt;0.1; **p&lt;0.05; ***p&lt;0.01</code></pre>
+</div>
+<div id="iv-es-el-estimador-de-mgm-para-cualquier-w" class="section level2">
+<h2>IV es el estimador de MGM para cualquier W</h2>
+<p>Usemos <em>gmm</em> para estimar el modelo exactamente identificado, usando diferentes matrices <span class="math inline">\(W\)</span>:</p>
+<pre class="r"><code>gmm_iv_opt &lt;- gmm(lwage ~ educ + exper + expersq + black + south,
+               ~ nearc4 + exper + expersq + black + south,
+               vcov = &quot;iid&quot;,
+               wmatrix = &quot;optimal&quot;,
+               type = &quot;twoStep&quot;,
+               data = data.ingresos)
+
+gmm_iv_ident &lt;- gmm(lwage ~ educ + exper + expersq + black + south,
+                  ~ nearc4 + exper + expersq + black + south,
+                  vcov = &quot;iid&quot;,
+                  wmatrix = &quot;ident&quot;,
+                  type = &quot;twoStep&quot;,
+                  data = data.ingresos)
+
+stargazer(gmm_iv_opt, gmm_iv_ident,
+          type=&quot;text&quot;,
+          digits = 4)</code></pre>
+<pre><code>## 
+## =========================================
+##                  Dependent variable:     
+##              ----------------------------
+##                         lwage            
+##                   (1)            (2)     
+## -----------------------------------------
+## educ           0.2214***      0.2214***  
+##                 (0.0409)      (0.0409)   
+##                                          
+## exper          0.1439***      0.1439***  
+##                 (0.0187)      (0.0187)   
+##                                          
+## expersq        -0.0024***    -0.0024***  
+##                 (0.0004)      (0.0004)   
+##                                          
+## black           -0.0369        -0.0369   
+##                 (0.0458)      (0.0458)   
+##                                          
+## south          -0.0889***    -0.0889***  
+##                 (0.0257)      (0.0257)   
+##                                          
+## Constant       2.3248***      2.3248***  
+##                 (0.7065)      (0.7065)   
+##                                          
+## -----------------------------------------
+## Observations     3,010          3,010    
+## =========================================
+## Note:         *p&lt;0.1; **p&lt;0.05; ***p&lt;0.01</code></pre>
+<p>Regresamos a la matriz <span class="math inline">\(Z\)</span> con un solo instrumento y estimamos el vector de parámetros:</p>
+<pre class="r"><code>Z &lt;- data.matrix(select(data.ingresos, constant, nearc4, exper, expersq, black,
+                        south),
+                 rownames.force = T)</code></pre>
+<p>Estimamos el vector de coeficientes:</p>
+<pre class="r"><code>b &lt;- solve(t(Z) %*% X) %*% t(Z) %*% Y
+b</code></pre>
+<pre><code>##                 lwage
+## constant  2.324805209
+## educ      0.221390289
+## exper     0.143933017
+## expersq  -0.002401759
+## black    -0.036938558
+## south    -0.088888463</code></pre>
+<p>El estimador de VI es el estimador de GMM para cualquier matriz <span class="math inline">\(W\)</span> cuando <span class="math inline">\(r=q\)</span>:</p>
+<pre class="r"><code>stargazer(gmm_iv_opt, gmm_iv_ident,
+          type=&quot;text&quot;,
+          digits = 4)</code></pre>
+<pre><code>## 
+## =========================================
+##                  Dependent variable:     
+##              ----------------------------
+##                         lwage            
+##                   (1)            (2)     
+## -----------------------------------------
+## educ           0.2214***      0.2214***  
+##                 (0.0409)      (0.0409)   
+##                                          
+## exper          0.1439***      0.1439***  
+##                 (0.0187)      (0.0187)   
+##                                          
+## expersq        -0.0024***    -0.0024***  
+##                 (0.0004)      (0.0004)   
+##                                          
+## black           -0.0369        -0.0369   
+##                 (0.0458)      (0.0458)   
+##                                          
+## south          -0.0889***    -0.0889***  
+##                 (0.0257)      (0.0257)   
+##                                          
+## Constant       2.3248***      2.3248***  
+##                 (0.7065)      (0.7065)   
+##                                          
+## -----------------------------------------
+## Observations     3,010          3,010    
+## =========================================
+## Note:         *p&lt;0.1; **p&lt;0.05; ***p&lt;0.01</code></pre>
+</div>
