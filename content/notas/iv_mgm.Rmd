@@ -24,17 +24,21 @@ library(gmm)
 library(stargazer)
 ```
 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/8s4pgc3DPN0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
 [Script de esta sesión](/notas/iv_mgm.R)
 
 [ingresos_iv.csv](/notas/ingresos_iv.csv)
 
+El propósito de esta nota es analizar el álgebra de variables instrumentales y del método generalizado de momentos. De esta forma, estaremos más concientes de las decisiones que tomamos cuando usamos las funciones más populares para aproximar dichos usando R o cualquier otro software.
 
-Usaremos los datos del estudio de Card sobre rendimientos a la educación para mostrar cómo funcionan las expresiones para estimar el vector de coeficientes y los errores estándar de los distintos estimadores de VI.
+Usaremos los datos del estudio de [Card (1995)](https://www.nber.org/papers/w4483) sobre rendimientos a la educación para mostrar cómo funcionan las expresiones para estimar el vector de coeficientes y los errores estándar de los distintos estimadores de VI. Card usa la proximidad a una institución de educación superior como instrumento de los años de educación acumulados.
 
 ```{r}
 data.ingresos <- read_csv("ingresos_iv.csv",
                           locale = locale(encoding = "latin1"))
 ```
+
 ## Modelo exactamente identificado
 
 Para tener una referencia, veamos lo que obtenemos con *ivreg* del paquete *AER*. Nuestro modelo tiene cinco regresores más una constante:
