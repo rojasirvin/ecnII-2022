@@ -30,7 +30,7 @@ library(stargazer)
 
 [ingresos_iv.csv](/notas/ingresos_iv.csv)
 
-El propósito de esta nota es analizar el álgebra de variables instrumentales y del método generalizado de momentos. De esta forma, estaremos más concientes de las decisiones que tomamos cuando usamos las funciones más populares para aproximar dichos usando R o cualquier otro software.
+El propósito de esta nota es analizar el álgebra de variables instrumentales y del método generalizado de momentos. De esta forma, estaremos más concientes de las decisiones que tomamos cuando usamos las funciones más populares para obtener dichos estimadores usando R o cualquier otro software.
 
 Usaremos los datos del estudio de [Card (1995)](https://www.nber.org/papers/w4483) sobre rendimientos a la educación para mostrar cómo funcionan las expresiones para estimar el vector de coeficientes y los errores estándar de los distintos estimadores de VI. Card usa la proximidad a una institución de educación superior como instrumento de los años de educación acumulados.
 

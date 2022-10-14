@@ -12,7 +12,7 @@ toc: false
 </iframe>
 <p><a href="/notas/iv_mgm.R">Script de esta sesión</a></p>
 <p><a href="/notas/ingresos_iv.csv">ingresos_iv.csv</a></p>
-<p>El propósito de esta nota es analizar el álgebra de variables instrumentales y del método generalizado de momentos. De esta forma, estaremos más concientes de las decisiones que tomamos cuando usamos las funciones más populares para aproximar dichos usando R o cualquier otro software.</p>
+<p>El propósito de esta nota es analizar el álgebra de variables instrumentales y del método generalizado de momentos. De esta forma, estaremos más concientes de las decisiones que tomamos cuando usamos las funciones más populares para obtener dichos estimadores usando R o cualquier otro software.</p>
 <p>Usaremos los datos del estudio de <a href="https://www.nber.org/papers/w4483">Card (1995)</a> sobre rendimientos a la educación para mostrar cómo funcionan las expresiones para estimar el vector de coeficientes y los errores estándar de los distintos estimadores de VI. Card usa la proximidad a una institución de educación superior como instrumento de los años de educación acumulados.</p>
 <pre class="r"><code>data.ingresos &lt;- read_csv(&quot;ingresos_iv.csv&quot;,
                           locale = locale(encoding = &quot;latin1&quot;))</code></pre>
