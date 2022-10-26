@@ -105,8 +105,19 @@ Semana de examen parcial.
   + CT, Capítulo 11
   + \* **Bootstrap**: Li, H., & Maddala, G. S. (1999). Bootstrap variance estimation of nonlinear functions of parameters: an application to long-run elasticities of energy demand. *Review of Economics and Statistics*, 81(4), 728-733.
   
-## Semana 12
+* Panel con endogeneidad
+  + CT, Capítulo 22 (secciones 22.1 - 22.5)
+  + \* **Panel + VI**: Antman, F. M. (2011). The intergenerational effects of paternal migration on schooling and work: What can we learn from children's time allocations?. *Journal of Development Economics*, 96(2), 200-208.
+  + \* Wooldridge, J. (2012). Panel data models with heterogeneity and endogeneity. Institute for Fiscal Studies.
+  + \* Semykina, A., & Wooldridge, J. M. (2010). Estimating panel data models in the presence of endogeneity and selection. _Journal of Econometrics_, 157(2), 375-380.
 
+  
+## Semana 12
+* Panel no lineal
+  + CT, Capítulo 23
+  + \* **Panel Poisson**: Castillo, J. C., Mejía, D., & Restrepo, P. (2020). Scarcity without leviathan: The violent effects of cocaine supply shortages in the mexican drug war. *Review of Economics and Statistics*, 102(2), 269-286.
+
+## Semana 13
 * Modelos de riesgo y sobrevivencia
   + CT, Capítulo 17 (secciones 17.1 – 17.4 y 17.6-17.11)
   + \* **Riesgo**: De Uña-Alvarez, J., Otero-Giráldez, M. S., & Alvarez-Llorente, G. (2003). Estimation under length-bias and right-censoring: an application to unemployment duration analysis for married women. *Journal of Applied Statistics*, 30(3), 283-291.
@@ -114,20 +125,6 @@ Semana de examen parcial.
 * Regresión cuantil
   + CT, Capítulo 4 (sección 4.6)
   + **Cuantil**: Engelhardt, G. V., & Kumar, A. (2011). Pensions and household wealth accumulation. *Journal of Human Resources*, 46(1), 203-236.
-
-
-## Semana 13
-
-* Panel con endogeneidad
-  + CT, Capítulo 22 (secciones 22.1 - 22.5)
-  + \* **Panel + VI**: Antman, F. M. (2011). The intergenerational effects of paternal migration on schooling and work: What can we learn from children's time allocations?. *Journal of Development Economics*, 96(2), 200-208.
-  + \* Wooldridge, J. (2012). Panel data models with heterogeneity and endogeneity. Institute for Fiscal Studies.
-  + \* Semykina, A., & Wooldridge, J. M. (2010). Estimating panel data models in the presence of endogeneity and selection. _Journal of Econometrics_, 157(2), 375-380.
-
-* Panel no lineal
-  + CT, Capítulo 23
-  + \* **Panel Poisson**: Castillo, J. C., Mejía, D., & Restrepo, P. (2020). Scarcity without leviathan: The violent effects of cocaine supply shortages in the mexican drug war. *Review of Economics and Statistics*, 102(2), 269-286.
-
 
 ## Semana 14
 

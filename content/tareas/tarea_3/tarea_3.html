@@ -8,3 +8,171 @@ toc: false
 
 
 
+<div id="instrucciones" class="section level2">
+<h2>Instrucciones</h2>
+<p>Las tareas deben entregarse de manera individual, pero se recomienda ampliamente colaborar en grupos de estudio. Las tareas deberán entregarse en Teams antes de la fecha y hora señalada. No se aceptarán tareas fuera de tiempo. Por favor, no comprima los archivos en carpetas comprimidas. Las tareas deberán contener dos archivos:</p>
+<p>Un primer documento de respuestas donde se incluyan las respuestas a las preguntas teóricas y conceptuales. Este documento debe estar en formato pdf y debe ser generado usando un software de procesamiento de textos científicos, por ejemplo, usando los leguajes LaTeX o Markdown. En este documento también se deben incluir las respuestas a preguntas sobre conclusiones que se desprenden de las secciones prácticas. Por ejemplo, si una pregunta pide obtener la media de la variable x en cierta base de datos, entonces el documento de respuestas debe incluir la pregunta y respuesta correspondiente: “la media de la variable x es 32.6”. En este documento también deberán incluirse las tablas y gráficas que se soliciten.</p>
+<p>Un segundo archivo deberá contener el código replicable usado para generar los resultados de la sección práctica. El código debe también crear las tablas y gráficas solicitadas. Los archivos de código se verificarán para comprobar su replicabilidad de manera aleatoria.</p>
+</div>
+<div id="fecha-de-entrega" class="section level2">
+<h2>Fecha de entrega</h2>
+<p>Lunes 14 de noviembre a las 20:00.</p>
+</div>
+<div id="archivos" class="section level2">
+<h2>Archivos</h2>
+<p><a href="/tareas/tarea_3/ingresos_iv.csv">ingresos_iv.csv</a></p>
+<p><a href="/tareas/tarea_3/comportamiento_wide.csv">comportamiento_wide.csv</a></p>
+<p><a href="/tareas/tarea_3/individuos_empleo_wide.csv">individuos_empleo_wide.csv</a></p>
+<p><a href="/tareas/tarea_3/mlbook1.csv">mlbook1.csv</a></p>
+<p><a href="/tareas/tarea_3/capital_trabajo.csv">capital_trabajo.csv</a></p>
+</div>
+<div id="pregunta-1" class="section level2">
+<h2>Pregunta 1</h2>
+<p>Uno de los debates más activos en economía es el relativo a la relación entre años de educación e ingreso. Los datos <em>ingresos_iv.dta</em> contiene una muestra de hombres de entre 24 y 36 años de edad.</p>
+<ol style="list-style-type: lower-alpha">
+<li><p>[3 puntos] Estime una regresión por MCO para explicar el logaritmo del salario (<strong>lwage</strong>) en función de la educación <strong>educ</strong> y los siguientes controles: <strong>exper</strong>, <strong>expersq</strong>, <strong>black</strong>, <strong>south</strong>, <strong>smsa</strong>, <strong>reg661</strong>, <strong>reg662</strong>, <strong>reg663</strong>, <strong>reg664</strong>, <strong>reg665</strong>, <strong>reg666</strong>, <strong>reg667</strong>, <strong>reg668</strong> y <strong>smsa66</strong>. Reporte errores robustos. ¿Qué problema encuentra en la estimación de esta relación? ¿El coeficiente sobre <strong>educ</strong> tiene una interpretación causal del efecto de la educación en el salario?</p></li>
+<li><p>[3 puntos] Se propone usar una variable dicotómica que indica si el individuo vivía cerca de una universidad cuando era niño, como instrumento de los años de educación. ¿Qué condiciones debe cumplir la variable propuesta para funcionar como instrumento válido?</p></li>
+<li><p>[4 puntos] ¿Cómo juzga la propuesta de usar la variable antes descrita como instrumento?</p></li>
+<li><p>[3 puntos] Estime la relación entre el logaritmo del salario y la educación usando la variable dicotómica de acceso a una universidad, <strong>nearc4</strong>, como instrumento. Emplee las mismas variables de control que en el modelo de MCO. Reporte errores robustos.</p></li>
+<li><p>[4 puntos] Interprete la primera etapa en términos del coeficiente sobre el instrumento. Obtenga el estadístico <span class="math inline">\(F\)</span> del instrumento excluido e interprete su magnitud.</p></li>
+<li><p>[3 puntos] Interprete el coeficiente sobre la variable de educación en el modelo estructural. Compare la magnitud del efecto estimado con el resultado de MCO.</p></li>
+<li><p>[3 puntos] Realice ahora el siguiente procedimiento. Primero, estime la primera etapa usando una regresión por MCO. Obtenga los valores ajustados de educación y llámelos <strong>educ_hat</strong>. Luego, estime la segunda etapa empleando <strong>educ_hat</strong> como variable independiente, además del resto de variables de control. ¿Cómo cambian sus resultados en comparación con la parte d.?</p></li>
+<li><p>[3 puntos] ¿A qué se deben las discrepancias que encuentra? ¿Cuál de las dos estrategias prefiere para estimar el modelo de variables instrumentales?</p></li>
+<li><p>[3 puntos] Reestime el modelo de variables instrumentales añadiendo un segundo instrumento, <strong>nearc2</strong>, y reporte errores robustos. ¿Cómo cambian sus resultados para la ecuación estructural con respecto al caso exactamente identificado?</p></li>
+<li><p>[3 puntos] Con el objeto que resulta de la estimación del modelo sobreidentificado, realice <em>summary(OBJETO, vcov = sandwich, diagnostics = TRUE)</em> para obtener las tres pruebas diagnóstico más usadas en variables instrumentales: prueba de instrumentos débiles, prueba de Hausman y prueba de Sargan. Interprete cada una de las pruebas.</p></li>
+<li><p>[4 puntos] Considere la primera etapa del modelo sobreidentificado. Compruebe que si realiza una prueba de significancia conjunta para los instrumentos obtiene la prueba de instrumentos débiles que se reporta en el resumen que obtuvo con <em>summary</em>.</p></li>
+<li><p>[4 puntos] Compruebe que si realiza el procedimiento de regresión auxiliar para la prueba de Hausman obtiene el mismo valor <span class="math inline">\(p\)</span> que se reporta en el resumen que obtuvo con <em>summary</em>.</p></li>
+</ol>
+</div>
+<div id="pregunta-2" class="section level2">
+<h2>Pregunta 2</h2>
+<p>Considere los datos <em>comportamiento_wide.csv</em>, que contienen información individual de niñas y niños, incluyendo su género, edad, raza e información de sus madres. Además, se incluye una medida auto reportada de autoestima (<strong>self</strong>) y una evaluación de comportamiento antisocial (<strong>anti</strong>). Se quiere conocer cómo influye la autoestima en el comportamiento antisocial. Para cada niño o niña hay tres observaciones en el tiempo. Se busca explicar el comportamiento antisocial en función de la autoestima y la condición de pobreza (<strong>pov</strong>):</p>
+<p><span class="math display">\[anti_{it}=\alpha_i+\beta_1 self_{it}+\beta_2 pov_{it}+\varepsilon_{it}\]</span></p>
+<ol style="list-style-type: lower-alpha">
+<li><p>[2 puntos] La base se encuentra en formato <em>wide</em>. Ponga la base en formato <em>long</em>, donde haya una columna para cada variable y donde las filas representen a un individuo en un periodo.</p></li>
+<li><p>[2 puntos] Estime la ecuación de comportamiento antisocial empleando MCO <em>pooled</em>. ¿Cuáles son los supuestos que se deben cumplir para que <span class="math inline">\(\hat{\beta}_1^{MCO}\)</span> sea consistente?</p></li>
+<li><p>[3 puntos] Estime la ecuación de comportamiento antisocial empleando efectos fijos. ¿Cuáles son los supuestos que se deben cumplir para que <span class="math inline">\(\hat{\beta}_1^{FE}\)</span> sea consistente?</p></li>
+<li><p>[3 puntos] Estime la ecuación de comportamiento antisocial empleando efectos aleatorios. ¿Cuáles son los supuestos que se deben cumplir para que <span class="math inline">\(\hat{\beta}_1^{RE}\)</span> sea consistente?</p></li>
+<li><p>[3 puntos] Se desea incorporar en el análisis el género (<strong>gender</strong>) y una variable dicotómica para los hispanos (<strong>hispanic</strong>). Indique qué modelo usaría y estime dicho modelo.</p></li>
+<li><p>[2 puntos] Regrese al modelo que incluye solo la autoestima y el estado de pobreza como covariables. Realice una prueba de Hausman para determinar si se prefiere un modelo de efectos fijos o uno de efectos aleatorios.</p></li>
+</ol>
+</div>
+<div id="pregunta-3" class="section level1">
+<h1>Pregunta 3</h1>
+<p>Cuando trabajamos con datos en panel tenemos dos fuentes de variación. Como los individuos difieren entre sí, por ejemplo, algunos tienen mayor habilidad que otros o algunos tienen mayor salario que otros, la primer fuente de variación es la que proviene de comparar entre unidades. Esta primer fuente de variación es la <strong>variación between</strong>. La variación between se define como:</p>
+<p><span class="math display">\[s^2_B=\frac{1}{N-1}\sum_i(\bar{x}_i-\bar{x})^2\]</span></p>
+<p>En la expresión anterior <span class="math inline">\(\bar{x}_i=\frac{1}{T}\sum_t x_{it}\)</span> es el promedio de la característica <span class="math inline">\(x\)</span> para un individuo a lo largo del tiempo. Por tanto, <span class="math inline">\((\bar{x}_i-\bar{x})\)</span> compara esta característica promedio con el promedio de todos los individuos <span class="math inline">\(\bar{x}=\frac{1}{NT}\sum_i\sum_t x_{it}\)</span>.</p>
+<p>La segunda fuente de variación surge porque las características de los individuos varían a lo largo del tiempo. A esta variación se le llama <strong>variación within</strong>. La variación within se define como:</p>
+<p><span class="math display">\[s_W^2=\frac{1}{NT-1}\sum_i\sum_t(x_{it}-\bar{x}_i)^2\]</span></p>
+<p>Así, la varianza total se define como:</p>
+<p><span class="math display">\[s_O^2=\frac{1}{NT-1}\sum_i\sum_t(x_{it}-\bar{x})\approx s^2_B+s^2_W\]</span></p>
+<p>Considere los datos <em>individuos_empleo_wide.csv</em>, que contienen información de trabajadores relativa a su salario, su educación y experiencia. En este ejercicio comprobará los resultados vistos en clase respecto al modelo de efectos fijos.</p>
+<ol style="list-style-type: lower-alpha">
+<li><p>[1 puntos] Los datos están en formato <em>wide</em>. Coloque los datos en formato <em>long</em>.</p></li>
+<li><p>[2 puntos] ¿Cómo es la variación <em>within</em> y <em>between</em> de la variable <strong>wage</strong>? Cuando trabajaba en Stata, esto era muy fácil de hacer con el comando <em>xtsum</em>. Pero no he encontrado una función que haga lo mismo e R. Para calcular entonces las varianzas, use entonces la siguiente función<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>:</p>
+<pre class="r"><code>XTSUM &lt;- function(data, varname, unit) {
+
+# Xtsum
+varname &lt;- enquo(varname)
+loc.unit &lt;- enquo(unit)
+
+ores &lt;- data %&gt;%
+  summarise(Mean=mean(!! varname, na.rm=TRUE),
+        sd=sd(!! varname, na.rm=TRUE),
+        min = min(!! varname, na.rm=TRUE),
+        max=max(!! varname, na.rm=TRUE),
+        N=sum(as.numeric((!is.na(!! varname)))))
+
+bmeans &lt;- data %&gt;%
+  group_by(!! loc.unit) %&gt;%
+  summarise(meanx=mean(!! varname, na.rm=T),
+        t.count=sum(as.numeric(!is.na(!! varname))))
+
+bres &lt;- bmeans %&gt;%
+  ungroup() %&gt;% 
+  summarise(sd = sd(meanx, na.rm=TRUE),
+        min = min(meanx, na.rm=TRUE), 
+        max=max(meanx, na.rm=TRUE),
+        n=sum(as.numeric(!is.na(t.count))), 
+        `T-bar`=mean(t.count, na.rm=TRUE))
+
+wdat &lt;- data %&gt;% 
+  group_by(!! loc.unit) %&gt;% 
+  mutate(W.x = scale(!! varname, center=TRUE, scale=FALSE))
+
+wres &lt;- wdat %&gt;% 
+  ungroup() %&gt;% 
+  summarise(sd=sd(W.x, na.rm=TRUE), 
+        min=min(W.x, na.rm=TRUE), 
+        max=max(W.x, na.rm=TRUE))
+
+# Loop to adjust the scales within group outputs against the overall mean
+for(i in 2:3) {
+wres[i] &lt;- sum(ores[1], wres[i])
+}
+
+# Table Output
+Variable &lt;- matrix(c(varname, &quot;&quot;, &quot;&quot;), ncol=1)
+Comparison &lt;- matrix(c(&quot;Overall&quot;, &quot;Between&quot;, &quot;Within&quot;), ncol=1)
+Mean &lt;- matrix(c(ores[1], &quot;&quot;, &quot;&quot;), ncol=1)
+Observations &lt;- matrix(c(paste0(&quot;N = &quot;, ores[5]), paste0(&quot;n = &quot;, bres[4]), paste0(&quot;T-bar = &quot;, round(bres[5], 4))), ncol=1)
+Tab &lt;- rbind(ores[2:4], bres[1:3], wres[1:3])
+Tab &lt;- cbind(Tab, Observations)
+Tab &lt;- cbind(Mean, Tab)
+Tab &lt;- cbind(Comparison, Tab)
+Tab &lt;- cbind(Variable, Tab)
+
+# Output
+return(Tab)
+}</code></pre>
+<p>Posteriormente, estime la varianza within, between y total como sigue:</p>
+<pre class="r"><code>XTSUM(data=DATA, varname=x, unit=id)</code></pre>
+<p>¿Cuál es mayor y por qué? Puede auxiliarse de <a href="http://stephenporter.org/files/xtsum_handout.pdf">este documento</a> para la interpretación.</p></li>
+<li><p>[2 puntos] Repita el procedimiento anterior para la variable <strong>black</strong>. ¿Qué sucede en este caso?</p></li>
+<li><p>[3 puntos] Para estudiar la relación entre salario y experiencia se propone estudiar el siguiente modelo:</p></li>
+</ol>
+<p><span class="math display">\[wage_{it}=\alpha_i+\beta exper_{it}+\varepsilon_{it}\]</span></p>
+<pre><code>Compruebe que el estimador de efectos fijos es equivalente a MCO con dummies de individuos.</code></pre>
+<ol style="list-style-type: lower-alpha">
+<li><p>[2 puntos] Compruebe que en un modelo de efectos fijos las características que no varían en el tiempo no pueden ser identificadas. Use la variable <strong>black</strong> para comprobarlo.</p></li>
+<li><p>[2 puntos] Compruebe que el estimador de efectos fijos es equivalente a MCO sobre el modelo en diferencias con respecto a la media. Para esto, conserve dos años consecutivos de datos y solo observaciones que tengan datos para salarios y experiencia en los dos años que elija. Luego estime por MCO el modelo con variables transformadas.</p></li>
+<li><p>[3 puntos] Compruebe que el estimador de efectos fijos es equivalente a MCO sobre el modelo en primeras diferencias. Parta de la muestra con dos años de la parte d. para estimar por MCO el modelo con variables transformadas.</p></li>
+</ol>
+</div>
+<div id="pregunta-4" class="section level1">
+<h1>Pregunta 4</h1>
+<p>Considere los datos <em>mlbook1.csv</em> con información sobre 2287 estudiantes en 131 escuelas. Nos interesa la relación entre una medida de aptitud verbal, (<strong>iq_vert</strong>) y el resultado de un examen de inglés (<strong>langpost</strong>). Las variables <strong>schoolnr</strong> y <strong>pupilnr</strong> identifican a las escuelas y los estudiantes, respectivamente. El modelo a estimar es el siguiente:</p>
+<p><span class="math display">\[langpost_{i}=\alpha+\beta iqvert_{i}+BX_{i}+\varepsilon_{i}\]</span>
+donde <span class="math inline">\(i\)</span> indexa y <span class="math inline">\(X_i\)</span> son tres características usadas como control: el sexo, <strong>sex</strong>, si el estudiante es de una población minoritaria, <strong>minority</strong> y el número de años repetidos, <strong>repeatgr</strong>.</p>
+<ol style="list-style-type: lower-alpha">
+<li><p>[3 puntos] ¿Por qué es posible que estemos frente a una situación de errores agrupados?</p></li>
+<li><p>[2 puntos] Estime la ecuación de calificación usando MCO ignorando la agrupación de datos. ¿Qué concluye respecto a la relación entre la aptitud verbal y la prueba de inglés?</p></li>
+<li><p>[3 puntos] Estime ahora los errores robustos a heteroscedasticidad del tipo HC1. ¿Qué cambia y por qué en la interpretación de la relación entre la prueba de aptitud y el examen?</p></li>
+<li><p>[2 puntos] Estime la ecuación de calificación usando MCO y efectos fijos de escuela. ¿Qué resuelve este procedimiento?</p></li>
+<li><p>[5 puntos] Estime la ecuación de calificación usando MCO y con errores agrupados a nivel escuela (sin efectos fijos de escuela). ¿Qué resuelve este procedimiento?</p></li>
+<li><p>[5 puntos] Estime la ecuación de calificación usando MCO, variables indicadoras de escuela y con errores agrupados a nivel escuela. ¿Qué resuelve este procedimiento?</p></li>
+</ol>
+</div>
+<div id="pregunta-5" class="section level1">
+<h1>Pregunta 5</h1>
+<p>Considere los datos <em>capital_trabajo.csv</em> sobre 100 unidades de producción. Con una función de producción Cobb-Douglas las participaciones del capital y el trabajo en el valor de la producción se pueden estimar usando una regresión lineal como sigue:</p>
+<p><span class="math display">\[ln(valor_i)=\alpha + \beta_K ln(capital_i) + \beta_L ln(trabajo_i) + u_i\]</span></p>
+<p>En algunas aplicaciones es de interés conocer el cociente de las participaciones estimadas, <span class="math inline">\(\beta_K/\beta_L\)</span>.</p>
+<ol style="list-style-type: lower-alpha">
+<li>[5 puntos] Usando 500 repeticiones bootstrap estime el error estándar del cociente <span class="math inline">\(\beta_K/\beta_L\)</span>. Para ello realice el siguiente procedimiento:
+<ol style="list-style-type: lower-roman">
+<li>Genere una matriz vacía de 500 filas para coleccionar sus relaciones estimadas.</li>
+<li>En cada una de las repeticiones obtenga una muestra con remplazo a partir de la muestra original.</li>
+<li>Estime por MCO los coeficientes sobre el log del capital y el log del trabajo. La variable dependiente es el log del valor de la producción. Calcule el cociente de los coeficientes estimados. Guarde el cociente en la matriz.</li>
+<li>Repita ii. y iii. 500 veces.</li>
+<li>Calcule la desviación estándar de los cocientes estimados.</li>
+</ol></li>
+<li>[5 puntos] Compruebe que su cálculo aproxima el error estándar obtenido con el Método Delta. Para ello, después de estimar la ecuación del valor de la producción con la muestra original puede usar la función <em>deltaMethod</em> del paquete <em>car</em>.</li>
+</ol>
+</div>
+<div class="footnotes footnotes-end-of-document">
+<hr />
+<ol>
+<li id="fn1"><p>Propuesta <a href="https://stackoverflow.com/questions/49282083/xtsum-command-for-r">aquí</a>.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
