@@ -38,7 +38,6 @@ mean(data.b$lwage)</code></pre>
 <h2>Ciclos o bucles para repetir tareas</h2>
 <p>El otro ingrediente para hacer bootstrap es poder automatizar una tarea para que se repita muchas veces. El siguiente ciclo calcula la media 10 veces y la guarda en un vector que primero inicializamos.</p>
 <pre class="r"><code>reps=10
-resultados &lt;- data.frame(medias=matrix(ncol = 1, nrow = reps))
 resultados &lt;- rep(NA, reps)
 
 for (i in 1:reps)

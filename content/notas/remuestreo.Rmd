@@ -44,7 +44,6 @@ El otro ingrediente para hacer bootstrap es poder automatizar una tarea para que
 
 ```{r include=T,echo=T,warning=FALSE, message=FALSE}
 reps=10
-resultados <- data.frame(medias=matrix(ncol = 1, nrow = reps))
 resultados <- rep(NA, reps)
 
 for (i in 1:reps)
