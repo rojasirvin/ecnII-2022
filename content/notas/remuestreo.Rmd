@@ -40,7 +40,7 @@ mean(data.b$lwage)
 
 ## Ciclos o bucles para repetir tareas
 
-El otro ingrediente para hacer bootstrap es poder automatizar una tarea para que se repita muchas veces. El siguiente ciclo calcula la media 10 veces y la guarda en un vector que primero inicializamos. 
+El otro ingrediente para hacer bootstrap es poder automatizar una tarea para que se repita muchas veces. El siguiente ciclo calcula la media 10 veces y la guarda en un vector que primero inicializamos:
 
 ```{r include=T,echo=T,warning=FALSE, message=FALSE}
 reps=10
@@ -56,4 +56,12 @@ for (i in 1:reps)
   #Guardamos en cada entrada la media estimada
   resultados[i] <- mean(data.b$lwage, na.rm=T)
 }
+```
+
+Como es pequeño, podemos verlo:
+
+```{r include=T,echo=T,warning=FALSE, message=FALSE}
+resultados
+
+mean(resultados)
 ```

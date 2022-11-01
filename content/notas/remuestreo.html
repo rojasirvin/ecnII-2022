@@ -36,7 +36,7 @@ mean(data.b$lwage)</code></pre>
 </div>
 <div id="ciclos-o-bucles-para-repetir-tareas" class="section level2">
 <h2>Ciclos o bucles para repetir tareas</h2>
-<p>El otro ingrediente para hacer bootstrap es poder automatizar una tarea para que se repita muchas veces. El siguiente ciclo calcula la media 10 veces y la guarda en un vector que primero inicializamos.</p>
+<p>El otro ingrediente para hacer bootstrap es poder automatizar una tarea para que se repita muchas veces. El siguiente ciclo calcula la media 10 veces y la guarda en un vector que primero inicializamos:</p>
 <pre class="r"><code>reps=10
 resultados &lt;- rep(NA, reps)
 
@@ -50,4 +50,10 @@ for (i in 1:reps)
   #Guardamos en cada entrada la media estimada
   resultados[i] &lt;- mean(data.b$lwage, na.rm=T)
 }</code></pre>
+<p>Como es pequeño, podemos verlo:</p>
+<pre class="r"><code>resultados</code></pre>
+<pre><code>##  [1] 6.278152 6.263837 6.264556 6.259330 6.262171 6.263085 6.258266 6.266374
+##  [9] 6.263656 6.258597</code></pre>
+<pre class="r"><code>mean(resultados)</code></pre>
+<pre><code>## [1] 6.263802</code></pre>
 </div>
