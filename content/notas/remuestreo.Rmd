@@ -1,0 +1,60 @@
+---
+title: "Remuestreo en R"
+summary: " "
+weight: 2
+type: book
+toc: false
+---
+
+## ¿Cómo hacer remuestreo en R?
+
+Un primer elemento para hacer bootstrap es cómo obtener muestras a partir de una muestra principal. Usamos los datos de Card (1995) que habíamos ya usado antes. Es importante siempre fijar una semilla para poder replicar los resultados.
+
+```{r include=T,echo=T,warning=FALSE, message=FALSE}
+set.seed(927)
+
+data.ingresos <- read.csv("./ingresos_iv.csv")
+
+obs <- nrow(data.ingresos)
+obs
+
+#En la muestra original
+mean(data.ingresos$lwage)
+```
+
+La función *sample* nos permite obtener una muestra de tamaño *obs* seleccionando con reemplazo filas del data frame *data.ingresos*.
+
+Con cada remuestreo obtenemos una muestra diferente. Si vemos la media del logaritmo del ingreso, aunque se parece, es numéricamente distinta entre remuestreos.
+
+```{r include=T,echo=T,warning=FALSE, message=FALSE}
+#Una muestra bootstrap
+data.b <-data.ingresos[sample(nrow(data.ingresos),obs, replace = TRUE),]
+
+mean(data.b$lwage)
+
+#Otra muestra bootstrap
+data.b <-data.ingresos[sample(nrow(data.ingresos),obs, replace = TRUE),]
+
+mean(data.b$lwage)
+```
+
+## Ciclos o bucles para repetir tareas
+
+El otro ingrediente para hacer bootstrap es poder automatizar una tarea para que se repita muchas veces. El siguiente ciclo calcula la media 10 veces y la guarda en un vector que primero inicializamos. 
+
+```{r include=T,echo=T,warning=FALSE, message=FALSE}
+reps=10
+resultados <- data.frame(medias=matrix(ncol = 1, nrow = reps))
+resultados <- rep(NA, reps)
+
+for (i in 1:reps)
+{
+  data.b <- data.ingresos[sample(nrow(data.ingresos),
+                                obs,
+                                replace = TRUE), ]
+
+  
+  #Guardamos en cada entrada la media estimada
+  resultados[i] <- mean(data.b$lwage, na.rm=T)
+}
+```

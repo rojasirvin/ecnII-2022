@@ -1,0 +1,54 @@
+---
+title: "Remuestreo en R"
+summary: " "
+weight: 2
+type: book
+toc: false
+---
+
+
+
+<div id="cómo-hacer-remuestreo-en-r" class="section level2">
+<h2>¿Cómo hacer remuestreo en R?</h2>
+<p>Un primer elemento para hacer bootstrap es cómo obtener muestras a partir de una muestra principal. Usamos los datos de Card (1995) que habíamos ya usado antes. Es importante siempre fijar una semilla para poder replicar los resultados.</p>
+<pre class="r"><code>set.seed(927)
+
+data.ingresos &lt;- read.csv(&quot;./ingresos_iv.csv&quot;)
+
+obs &lt;- nrow(data.ingresos)
+obs</code></pre>
+<pre><code>## [1] 3010</code></pre>
+<pre class="r"><code>#En la muestra original
+mean(data.ingresos$lwage)</code></pre>
+<pre><code>## [1] 6.261832</code></pre>
+<p>La función <em>sample</em> nos permite obtener una muestra de tamaño <em>obs</em> seleccionando con reemplazo filas del data frame <em>data.ingresos</em>.</p>
+<p>Con cada remuestreo obtenemos una muestra diferente. Si vemos la media del logaritmo del ingreso, aunque se parece, es numéricamente distinta entre remuestreos.</p>
+<pre class="r"><code>#Una muestra bootstrap
+data.b &lt;-data.ingresos[sample(nrow(data.ingresos),obs, replace = TRUE),]
+
+mean(data.b$lwage)</code></pre>
+<pre><code>## [1] 6.261918</code></pre>
+<pre class="r"><code>#Otra muestra bootstrap
+data.b &lt;-data.ingresos[sample(nrow(data.ingresos),obs, replace = TRUE),]
+
+mean(data.b$lwage)</code></pre>
+<pre><code>## [1] 6.262326</code></pre>
+</div>
+<div id="ciclos-o-bucles-para-repetir-tareas" class="section level2">
+<h2>Ciclos o bucles para repetir tareas</h2>
+<p>El otro ingrediente para hacer bootstrap es poder automatizar una tarea para que se repita muchas veces. El siguiente ciclo calcula la media 10 veces y la guarda en un vector que primero inicializamos.</p>
+<pre class="r"><code>reps=10
+resultados &lt;- data.frame(medias=matrix(ncol = 1, nrow = reps))
+resultados &lt;- rep(NA, reps)
+
+for (i in 1:reps)
+{
+  data.b &lt;- data.ingresos[sample(nrow(data.ingresos),
+                                obs,
+                                replace = TRUE), ]
+
+  
+  #Guardamos en cada entrada la media estimada
+  resultados[i] &lt;- mean(data.b$lwage, na.rm=T)
+}</code></pre>
+</div>
