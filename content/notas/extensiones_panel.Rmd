@@ -1,0 +1,69 @@
+---
+title: "Extensiones de datos en panel"
+summary: " "
+weight: 2
+type: book
+toc: false
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=T,
+                      warning = F,
+                      message = F)
+
+rm(list = ls())
+options(scipen=999) # Prevenir notación científica
+
+library(tidyverse)
+library(janitor)
+library(sandwich)
+library(clubSandwich)
+library(lfe)
+library(AER)
+library(gmm)
+library(stargazer)
+```
+
+  
+## Variables instrumentales
+
+```{r setup, include=FALSE}
+df <- read_csv("MOMprecise.csv",
+                          locale = locale(encoding = "latin1"))
+```
+
+MCO
+
+```{r setup, include=FALSE}
+summary(lm(lnhr ~ lnwg + kids + ageh + agesq + disab,
+           data = df))
+```
+
+
+MCO a primeras diferencias
+
+```{r setup, include=FALSE}
+df <- df %>% 
+  group_by(id) %>% 
+  mutate(dlnhr=lnhr-lag(lnhr),
+         dlnwg=lnwg-lag(lnwg),
+         dkids=kids-lag(kids),
+         dageh=ageh-lag(ageh),
+         dagesq=agesq-lag(agesq),
+         ddisab=disab-lag(disab)) %>% 
+  ungroup()
+
+summary(lm(dlnhr ~ dlnwg + dkids + dageh + dagesq + ddisab,
+           data = df))
+```
+
+
+```{r setup, include=FALSE}
+#Para lidiar con la correlación serial
+summary(felm(dlnhr ~ dlnwg + dkids + dageh + dagesq + ddisab |
+               0 |
+               0 |
+               id,
+           data = df))
+```

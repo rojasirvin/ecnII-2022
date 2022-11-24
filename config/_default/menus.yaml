@@ -25,4 +25,7 @@ main:
   - name: Notas
     url: 'notas'
     weight: 90
+  - name: Diapositivas
+    url: 'diapositivas'
+    weight: 90
   
