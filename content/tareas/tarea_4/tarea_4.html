@@ -1,6 +1,6 @@
 ---
 title: "Tarea 4"
-summary: "Jueves 24 de noviembre a las 20:00"
+summary: "Viernes 9 de diciembre a las 20:00"
 weight: 1
 type: book
 toc: false
@@ -8,3 +8,48 @@ toc: false
 
 
 
+<div id="instrucciones" class="section level2">
+<h2>Instrucciones</h2>
+<p>Las tareas deben entregarse de manera individual, pero se recomienda ampliamente colaborar en grupos de estudio. Las tareas deberán entregarse en Teams antes de la fecha y hora señalada. No se aceptarán tareas fuera de tiempo. Por favor, no comprima los archivos en carpetas comprimidas. Las tareas deberán contener dos archivos:</p>
+<p>Un primer documento de respuestas donde se incluyan las respuestas a las preguntas teóricas y conceptuales. Este documento debe estar en formato pdf y debe ser generado usando un software de procesamiento de textos científicos, por ejemplo, usando los leguajes LaTeX o Markdown. En este documento también se deben incluir las respuestas a preguntas sobre conclusiones que se desprenden de las secciones prácticas. Por ejemplo, si una pregunta pide obtener la media de la variable x en cierta base de datos, entonces el documento de respuestas debe incluir la pregunta y respuesta correspondiente: “la media de la variable x es 32.6”. En este documento también deberán incluirse las tablas y gráficas que se soliciten.</p>
+<p>Un segundo archivo deberá contener el código replicable usado para generar los resultados de la sección práctica. El código debe también crear las tablas y gráficas solicitadas. Los archivos de código se verificarán para comprobar su replicabilidad de manera aleatoria.</p>
+</div>
+<div id="fecha-de-entrega" class="section level2">
+<h2>Fecha de entrega</h2>
+<p>Viernes 9 de diciembre a las 20:00.</p>
+</div>
+<div id="archivos" class="section level2">
+<h2>Archivos</h2>
+<p><a href="/tareas/tarea_4/MunichRent.rda">MunichRent.rda</a></p>
+<p><a href="/tareas/tarea_4/data_rossi.csv">data_rossi.csv</a></p>
+</div>
+<div id="pregunta-1" class="section level1">
+<h1>Pregunta 1</h1>
+<p>Considere los datos en <em>MunichRent.rda</em>. Estos archivos contienen información sobre rentas en la ciudad de Munich, <strong>rent</strong>. Se desea modelar la renta en función de la antiguedad de los edificios en renta (debe crear la variable <strong>antiguedad</strong>), controlando por el área, <strong>area</strong>. También se desea controlar por el tipo de baño y cocina que tiene el edificio, usando efectos fijos de las variables <strong>bath</strong> y <strong>kitchen</strong>. La variable <strong>yearc</strong> indica cuándo fue construido el edificio. Para leer los datos basta con ejecutar lo siguiente:</p>
+<pre class="r"><code>load(&quot;./MunichRent.rda&quot;)</code></pre>
+<ol style="list-style-type: lower-alpha">
+<li><p>[15 puntos] Estime la densidad Kernel de las rentas por metro cuadrado, <strong>rentsqm</strong>, usando un Kernel Epanechnikov. Use el estimador <em>plug-in</em> de Silverman para estimar el ancho de ventana óptimo.</p></li>
+<li><p>[20 puntos] Estime por MCO la relación entre el la renta por metro cuadrado, <strong>rentsqm</strong> y la antiguedad del edificio, controlando por efectos fijos de <strong>bath</strong> y <strong>kitchen</strong>. Estime la misma relación, pero con una regresión mediana. Interprete los coeficientes sobre la antiguedad en ambos casos.</p></li>
+<li><p>[15 puntos] Estime ahora una regresión cuantil para cada uno de los deciles de la distribución de la renta y represente en una gráfica los coeficientes por regresión cuantil junto con el coeficiente de MCO para la variable <strong>antiguedad</strong>. ¿Concluye que vale la pena modelar la relación de las rentas en función del área y la antiguedad usando regresión cuantil?</p></li>
+</ol>
+</div>
+<div id="pregunta-2" class="section level1">
+<h1>Pregunta 2</h1>
+<p>Los datos en <em>rossi_arrestos.csv</em> contienen información de 432 personas que fueron arrestadas en algún momento de sus vidas y luego puestas en libertad. A estas personas se les siguió durante 52 semanas para estudiar el tiempo que transcurrió hasta que reincidieron en cometer un delito y fueron arrestadas nuevamente. <strong>week</strong> indica cuántas semanas pasaron desde que fueron liberados hasta ser de nuevo arrestados y la variable <strong>arrest</strong> indica el evento de ser arrestado. Un programa público consistió en darle ayuda financiera a un grupo seleccionado al azar e identificado por <strong>fin</strong>. Las variables de control para el análisis son la edad (<strong>age</strong>), indicadoras de raza (<strong>race</strong>), la experiencia laboral (<strong>wexp</strong>), indicadoras de estado civil (<strong>mar</strong>), una indicadora de si la liberación fue por perdón (<strong>paro</strong>), y el número de arrestos previos (<strong>prio</strong>).</p>
+<ol style="list-style-type: lower-alpha">
+<li><p>[10 puntos] Represente la función de sobrevivencia no paramétrica de Kaplan-Meier.</p></li>
+<li><p>[10 puntos] Represente la función de riesgo acumulado no paramétrica de Nelson-Aalen.</p></li>
+<li><p>[15 puntos] Represente nuevamente la función de sobrevivencia no paramétrica de Kaplan-Meier, pero ahora distinguiendo entre quienes recibieron y no recibieron ayuda del programa. ¿Qué observa?</p></li>
+<li><p>[15 puntos] Estime ahora un modelo paramátrico de duración asumiendo una distribución Weibull. ¿Cómo cambia la tasa de riesgo cuando la edad se incrementa en un año?</p>
+<p><strong>Muy importante antes de que interprete los coeficientes</strong>: note que en el paquete <em>survival</em> usa una parametrización de la distribución Weibull diferente a la que se presenta en Cameron y Trivedi (2005) y otros textos de economía. En particular, en clase vimos que con la parametrización Weibull, las funciones de riesgo y sobrevivencia son:</p>
+<p><span class="math display">\[\lambda(t)=\gamma \alpha t^{\alpha-1}\]</span></p>
+<p><span class="math display">\[S(t)=exp(-\Lambda(t))=exp(-\gamma t^{\alpha})\]</span></p>
+<p>A <span class="math inline">\(\alpha\)</span> se le conoce como parámetro de escala, mientras que <span class="math inline">\(\gamma\)</span> es la media. En cambio, en el paquete <em>survival</em> el parámetro de escala es <span class="math inline">\(\sigma=\frac{1}{\alpha}\)</span>, y se hace <span class="math inline">\(\mu/\sigma=-\ln \gamma\)</span>. Por tanto,</p>
+<p><span class="math display">\[\lambda^*(t)=exp\left(-\frac{\mu}{\sigma}\right) \frac{1}{\sigma} t^{\frac{1}{\sigma}-1}\]</span>
+<span class="math display">\[S^*(t)=exp\left(-exp\left(-\frac{\mu}{\sigma}\right)t^{\frac{1}{\sigma}}\right)\]</span>
+Esto implica que tenemos que <em>traducir</em> nuestros coeficientes estimados a la parametrización más natural, como en Cameron y Trivedi (2005), para poderlos interpretar. Basta entonces con calcular:</p>
+<p><span class="math display">\[\hat{\beta}_j=-\frac{\hat{\beta}_j^*}{\hat{\sigma}}\]</span>
+donde <span class="math inline">\(\hat{\beta}_j^*\)</span> es el coeficiente estimado con <em>survival</em> y <span class="math inline">\(\hat{\beta}_j\)</span> es su contraparte asociada a la parametrización Weibull de Cameron y Trivedi (2005). Noten que <span class="math inline">\(\hat{\sigma}\)</span> es lo que la salida de la función <em>survreg</em> llama <em>Scale</em>. Podría hacer la transformación a mano, sin embargo, nos interesan también los errores estándar.</p>
+<p>Para hacer más práctica la transformación de los coeficientes Weibull use la función <em>ConvertWeibull</em> del paquete <em>SurvRegCensCov</em>. Esta función convierte los coeficientes a la parametrizaición Weibull más usada en economía, como la presentan Cameron y Trivedi (2005), y emplea el método delta para construir los errores estándar e intervalos de confianza. Ahora sí, puede interpretar los coeficientes de la regresión Weibull.</p></li>
+</ol>
+</div>

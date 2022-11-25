@@ -127,7 +127,7 @@ $$\hat{f}_{hist}(x_0)=\frac{1}{Nh}\sum_i\frac{1}{2}\mathbf{1}\left(\Bigg|\frac{x
 # Ejemplo: histograma
 
 .pull-left[
-```{r echo=T, include=T, eval=T, results=T, message=F, warning=F}
+```{r echo=T, include=T, eval=F, results=T, message=F, warning=F}
 
 data.salarios<-read_csv("salarios.csv",
                         locale = locale(encoding = "latin1"))
@@ -300,7 +300,7 @@ h
 
 - Debemos de especificar la mitad de $h$ que acabamos de calcular
 
-```{r echo=T, include=T, eval=T, results=T, message=T, warning=F}
+```{r echo=T, include=T, eval=F, results=T, message=T, warning=F}
 data.salarios %>% 
   ggplot(aes(x=lnhwage)) +
   geom_histogram(aes(y=..density..),
@@ -375,7 +375,7 @@ data.salarios %>%
 
 - Notamos que la elección del tipo de Kernel es menos relevante
 
-```{r echo=T, include=T, eval=T, results=T, message=T, warning=F}
+```{r echo=T, include=T, eval=F, results=T, message=T, warning=F}
 delta.gausiano <- 0.7764
 delta.uniforme <- 1.3510
 delta.cuartico <- 2.0362
@@ -576,7 +576,7 @@ data.sim <- data.sim %>%
 - Notamos que $k$ más grande genera una función más suave
 
 .pull-left[
-```{r out.width="100%", echo=T, include=T, eval=T, results=T, message=F, warning=F}
+```{r out.width="100%", echo=T, include=T, eval=F, results=T, message=F, warning=F}
 data.sim %>% 
   ggplot(aes(x=x,y=y))+
   geom_point()+
@@ -616,7 +616,7 @@ data.sim %>%
 - Y ahora incluimos la función generada por Lowess
 
 .pull-left[
-```{r out.width="100%", echo=T, include=T, eval=T, results=T, message=F, warning=F}
+```{r out.width="100%", echo=T, include=T, eval=F, results=T, message=F, warning=F}
 
 fit.lowess <- lowess(data.sim$x, y=data.sim$y, f=25/100)
 
