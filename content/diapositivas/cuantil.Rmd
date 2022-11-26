@@ -2,7 +2,6 @@
 title: "Regresión cuantil"
 author: "Irvin Rojas"
 institute: "CIDE"
-date: "11 de noviembre de 2021"
 mathspec: true
 header-includes:
   - \usepackage{amsmath}
@@ -54,7 +53,7 @@ xfun::pkg_load2(c('base64enc', 'htmltools', 'mime'))
 
 
 .title[
-# Clase 24. Regresión cuantil
+# Regresión cuantil
 ]
 .subtitle[
 ## Econometría II
@@ -147,7 +146,7 @@ $$\hat{\mu}_q=\arg\min_{\beta} \sum_{i|y_i\geq \beta}^N q|y_i-\beta|+\sum_{i|y_i
 $$\hat{\beta}_q=\arg\min_{\beta_q} \sum_{i|y_i\geq x_i'\beta}^N q|y_i-x_i'\beta_q|+\sum_{i|y_i <x_i'\beta}^N(1-q)|y_i-x_i'\beta_q|$$
 - Se hace explícito que $\beta_q$ depende de $q$, es decir, el cuantil elegido
 
-- Este es un problema de minimización de una función de pérdida, como de los que hablamos de forma general en la [Clase 2](https://ecnii-2021.netlify.app/clases/clase_2.html#4)
+- Este es un problema de minimización de una función de pérdida
 
 - En el caso de la regresión cuantil tiene la característica de pesar asimétricamente los errores
   - $(1-q)$ es la penalización para las sobrepredicciones
@@ -188,6 +187,8 @@ con $$A=p\lim\frac{1}{N}\sum_i f_{u_q}(0|x_i)x_ix_i' \\ B=p\lim\frac{1}{N}\sum_i
 ---
 
 # Ejemplo
+
+- Usamos los datos en [vietnam_hogares.csv](/diapositivas/vietnam_hogares.csv)
 
 - Datos de una encuesta levantada en Vietnam en 1997 (tipo ENIGH)
 
@@ -307,14 +308,6 @@ plot(summary(r.q1_9), parm="lntotal", ylab="log del gasto total")
   - Partimos la muestra en $Q$ segmentos y hacemos MCO en cada uno de ellos
   
 - Los efectos cuantil nos dicen efectos sobre distribuciones, no sobre individuos
-
----
-
-# Próxima sesión
-
-- Estudiaremos los fundamentos de econometría espacial
-
-  - LeSage, J. P. (2008). An introduction to spatial econometrics. *Revue d’économie industrielle*, (123), 19-44.
 
 ---
 
