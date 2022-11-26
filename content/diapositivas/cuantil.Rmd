@@ -28,7 +28,7 @@ class: title-slide
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE,
                       warning = F,
-                      message = F, fig.path = "figures/")
+                      message = F, fig.path = "./figures/")
 library(tidyverse)
 library(magick)
 library(reticulate)
