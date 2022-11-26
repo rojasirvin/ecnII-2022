@@ -28,7 +28,7 @@ class: title-slide
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE,
                       warning = F,
-                      message = F, fig.path = "./figures/")
+                      message = F, fig.path = "figures/")
 library(tidyverse)
 library(magick)
 library(reticulate)
@@ -38,11 +38,6 @@ library(foreign)
 library(AER)
 library(clubSandwich)
 library(quantreg)
-
-
-xfun::pkg_load2(c('base64enc', 'htmltools', 'mime'))
-
-knitr::opts_knit$set(root.dir = "C:/Users/rojas/Dropbox/presentations_sites/ecn_ciestaam2022")
 ```
 
 .title[
@@ -183,7 +178,7 @@ con $$A=p\lim\frac{1}{N}\sum_i f_{u_q}(0|x_i)x_ix_i' \\ B=p\lim\frac{1}{N}\sum_i
 
 # Ejemplo
 
-- Usamos los datos en [vietnam_hogares.csv](\diapositivas\vietnam_hogares.csv)
+- Usamos los datos en [vietnam_hogares.csv](/diapositivas/vietnam_hogares.csv)
 
 - Datos de una encuesta levantada en Vietnam en 1997 (tipo ENIGH)
 
@@ -204,7 +199,7 @@ con $$A=p\lim\frac{1}{N}\sum_i f_{u_q}(0|x_i)x_ix_i' \\ B=p\lim\frac{1}{N}\sum_i
 .pull-left[
 ```{r echo=T, include=T, eval=T, results=T, message=F, warning=F}
 
-data.wb<-read_csv("data/vietnam_hogares.csv",
+data.wb<-read_csv("vietnam_hogares.csv",
                         locale = locale(encoding = "latin1")) %>% 
   filter(!is.na(lhhex12m)) %>% 
   rename(lnmed=lhhex12m, lntotal=lhhexp1)
@@ -355,11 +350,16 @@ La línea del percentil 90 muestra el salario por arriba del cual se encuentra e
 
 ]
 
+
 .pull-right[
 ```{r out.height=500, fig.cap='Fuente: Leeds (2014)', fig.align='center'}
-knitr::include_graphics("../slides/figures/quantile_goals.png", error=F)
+knitr::include_graphics("figures/quantile_goals.png", error=F)
 ```
 ]
+
+
+
+
 
 
 ---

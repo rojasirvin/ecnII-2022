@@ -158,7 +158,7 @@ con `$$A=p\lim\frac{1}{N}\sum_i f_{u_q}(0|x_i)x_ix_i' \\ B=p\lim\frac{1}{N}\sum_
 
 # Ejemplo
 
-- Usamos los datos en [vietnam_hogares.csv](\diapositivas\vietnam_hogares.csv)
+- Usamos los datos en [vietnam_hogares.csv](/diapositivas/vietnam_hogares.csv)
 
 - Datos de una encuesta levantada en Vietnam en 1997 (tipo ENIGH)
 
@@ -179,7 +179,7 @@ con `$$A=p\lim\frac{1}{N}\sum_i f_{u_q}(0|x_i)x_ix_i' \\ B=p\lim\frac{1}{N}\sum_
 .pull-left[
 
 ```r
-data.wb&lt;-read_csv("data/vietnam_hogares.csv",
+data.wb&lt;-read_csv("vietnam_hogares.csv",
                         locale = locale(encoding = "latin1")) %&gt;% 
   filter(!is.na(lhhex12m)) %&gt;% 
   rename(lnmed=lhhex12m, lntotal=lhhexp1)
@@ -261,7 +261,7 @@ g1 &lt;- data.wb %&gt;%
 ]
 
 .pull-right[
-![](./figures/unnamed-chunk-5-1.png)&lt;!-- --&gt;
+![](figures/unnamed-chunk-5-1.png)&lt;!-- --&gt;
 ]
 
 ---
@@ -284,9 +284,12 @@ coef(r.q1_9)
 ```
 
 ```
-##             tau= 0.1  tau= 0.2  tau= 0.3  tau= 0.4  tau= 0.5  tau= 0.6  tau= 0.7  tau= 0.8  tau= 0.9
-## (Intercept) 2.825071 1.7402326 1.0971052 0.6808687 0.5921625 0.6631984 0.4732287 0.3966890 0.6750989
-## lntotal     0.151201 0.3552251 0.4797725 0.5691746 0.6210917 0.6531126 0.7147830 0.7675658 0.8003567
+##             tau= 0.1  tau= 0.2  tau= 0.3  tau= 0.4  tau= 0.5  tau= 0.6
+## (Intercept) 2.825071 1.7402326 1.0971052 0.6808687 0.5921625 0.6631984
+## lntotal     0.151201 0.3552251 0.4797725 0.5691746 0.6210917 0.6531126
+##              tau= 0.7  tau= 0.8  tau= 0.9
+## (Intercept) 0.4732287 0.3966890 0.6750989
+## lntotal     0.7147830 0.7675658 0.8003567
 ```
 ]
 
@@ -311,7 +314,7 @@ plot(summary(r.q1_9),
      xlab="Cuantil")
 ```
 
-&lt;img src="./figures/unnamed-chunk-8-1.png" width="80%" /&gt;
+&lt;img src="figures/unnamed-chunk-8-1.png" width="80%" /&gt;
 ]
 
 ---
@@ -347,7 +350,7 @@ El 90% de los puntos están debajo de la recta con pendiente `\(\hat{\beta}_{90}
 ]
 
 .pull-right[
-![](./figures/unnamed-chunk-9-1.png)&lt;!-- --&gt;
+![](figures/unnamed-chunk-9-1.png)&lt;!-- --&gt;
 ]
 
 
@@ -369,12 +372,17 @@ La línea del percentil 90 muestra el salario por arriba del cual se encuentra e
 
 ]
 
+
 .pull-right[
 &lt;div class="figure" style="text-align: center"&gt;
-&lt;img src="../slides/figures/quantile_goals.png" alt="Fuente: Leeds (2014)" height="500" /&gt;
+&lt;img src="figures/quantile_goals.png" alt="Fuente: Leeds (2014)" width="683" height="500" /&gt;
 &lt;p class="caption"&gt;Fuente: Leeds (2014)&lt;/p&gt;
 &lt;/div&gt;
 ]
+
+
+
+
 
 
 ---
