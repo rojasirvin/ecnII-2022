@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Modelos de duración</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Irvin Rojas" />
+    <script src="libs/header-attrs-2.17/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/metropolis-fonts.css" rel="stylesheet" />
+    <link rel="stylesheet" href="libs/cide.css" type="text/css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap-grid.min.css" type="text/css" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" type="text/css" />
+    <link rel="stylesheet" href="https://cdn.rawgit.com/jpswalsh/academicons/master/css/academicons.min.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+class: title-slide
+
+
+
+&lt;style type="text/css"&gt;
+pre {
+  max-width: 100%;
+  overflow-x: scroll;
+}
+&lt;/style&gt;
+
+.title[
+# Modelos de duración
+]
+
+.subtitle[
+## Econometría II
+]
+.author[
+### Irvin Rojas &lt;br&gt; [rojasirvin.com](https://www.rojasirvin.com/) &lt;br&gt; [&lt;i class="fab fa-github"&gt;&lt;/i&gt;](https://github.com/rojasirvin) [&lt;i class="fab fa-twitter"&gt;&lt;/i&gt;](https://twitter.com/RojasIrvin) [&lt;i class="ai ai-google-scholar"&gt;&lt;/i&gt;](https://scholar.google.com/citations?user=FUwdSTMAAAAJ&amp;hl=en)
+]
+
+.affiliation[
+### Centro de Investigación y Docencia Económicas &lt;br&gt; División de Economía
+]
+
+---
+
+# Motivación
+
+- Hay problemas económicos que tienen una dimensión temporal de duración
+
+  - Desempleo
+  
+  - Huelga
+  
+  - Vida de las empresas
+  
+- Podemos definir como variable de interés el fin de dichos eventos
+
+- Nos interesa conocer cómo afecta un cambio en `\(x\)` a la duración de los eventos
+
+---
+
+class: inverse, middle, center
+
+# Modelos de duración
+
+---
+
+# Modelos de duración
+
+`\(F(t)\)` es la función acumulativa de una variable aleatoria de duración `\(T\)`
+
+`\(f(t)\)` es la densidad, con `\(f(t)=\frac{dF(t)}{dt}\)`
+
+Así, podemos definir la probabilidad de que la duración de un evento sea menor a `\(t\)` como
+
+`$$P(T\leq t)=\int_0^tf(s)ds$$`
+
+**Función de sobrevivencia**: es la probabilidad de que el evento sea mayor que `\(t\)`
+
+`$$S(t)=P(T&gt;t)=1-F(t)$$`
+
+**Función de riesgo (_hazard function_)**: probabilidad instantánea de dejar un estado, condicional a *sobrevivir* al tiempo `\(t\)`
+
+`$$\lambda(t)=\frac{f(t)}{S(t)}$$`
+---
+
+# Modelos de duración
+
+Noten que como `\(f(t)=-\frac{dS(t)}{dt}\)`, entonces
+
+`$$\lambda(t)=\frac{f(t)}{S(t)}=-\frac{d}{dt}\ln S(t)$$`
+
+Integrando `\(\lambda(t)\)`
+
+$$
+`\begin{aligned}
+\int_0^t \lambda(u)du&amp;=-\ln S(u)\Big|_0^t \\
+&amp;=-(\ln S(t)-\ln S(0)) =-(\ln S(t)-\ln (1)) \\
+&amp;=-\ln S(t)
+\end{aligned}`
+$$
+
+ Por tanto, la función de sobreviviencia, es decir, la probabilidad de sobrevivir hasta `\(t\)`, es una función de la suma de los riesgos hasta `\(t\)`:
+
+`$$S(t)=exp\left(-\int_0^t\lambda(u)du\right)$$`
+
+---
+
+# Modelos de duración
+
+Los demógrafos llaman **riesgo acumulado** a
+
+`$$\Lambda (t)=\int_0^t\lambda(x)dx$$`
+
+Podemos ir de la sobrevivencia al riesgo acumulado y al revés
+
+`$$\Lambda(t)=\int_0^t\lambda(s)ds=-\ln S(t)$$`
+
+Estos resultados muestran que podemos describir la distribución de `\(T\)` por medio de `\(S(t)\)` o de `\(\lambda(t)\)`
+
+Propondremos modelos para describir, por ejemplo, el riesgo en función de observables, `\(\lambda(t,x)\)`
+
+
+---
+
+class: inverse, middle, center
+
+# Censura
+
+---
+
+# Censura
+
+En aplicaciones de duración la censura surge porque algunos eventos (vida, huelga, desempleo) se observan de forma incompleta
+
+Por ejemplo, en la ENOE podemos ver a las personas que cuando se hizo la encuesta estaban desempleadas
+
+Sin embargo, no sabemos cuándo terminó dicho periodo de desempleo para algunas persoans
+
+Hay **censura por la derecha** cuando algunos eventos ya han termindo para cuando llegamos al periodo `\(c\)`
+
+Pero para algunos otros, solo sabemos que terminarán en algún momento en el intervalo `\((c,\infty)\)`
+  
+La **censura por la izquierda** ocurre cuando sabemos que algunos eventos terminarán en el intervalo `\((0,c)\)`, pero no se sabe exactamente cuándo
+
+---
+
+# Censura independiente o no informativa
+
+Cada evento individual tiene una duración `\(T_i^*\)` y un momento de censura `\(C_i^*\)`
+  
+  - Si el evento termina antes que ocurra la censura, observamos `\(T_i^*\)`
+  
+  - Si la censura ocurre primero, observamos `\(C_i^*\)`
+  
+Entonces, los datos que vemos son realizaciones del siguiente proceso
+
+`$$T_i=min(T_i^*,C_i^*) \\ \delta_i=\mathcal{I}(T_i^*&lt;C_i^*)$$`
+
+Vemos pares `\((t_1,\delta_1),(t_2,\delta_2),\ldots,(t_N,\delta_N)\)`
+
+---
+
+# Casos de censura independiente
+
+Nos ocuparemos de casos en que los parámetros de la distribución de `\(C^*\)` no son informativos sobre los parámetros de la distribución de `\(T^*\)`
+
+**Censura aleatoria**: cuando `\(T_i^*\)` y `\(C_i^*\)` son independientes
+
+  - Por ejemplo: fallas aleatorias, salidas aleatorias del estudio o terminación del estudio
+  
+**Censura tipo I**: cuando los eventos se censuran si estos duran más que `\(t_{c_i}\)`
+
+  - Clásico ejemplo: focos que se prueban durante `\(X\)` horas
+  
+**Censura tipo II**: cuando el estudio dura hasta que se observan `\(p\)` eventos completos y el resto se censura en `\(t_p\)`
+
+---
+
+class: inverse, middle, center
+
+# Estimación no paramétrica
+
+---
+
+# Estimación no paramétrica
+
+Consideremos un problema de duración en tiempo discreto, donde queremos modelar el momento en el que ocurre un evento (falla, muerte, fin del desempleo, fin de la huelga)
+
+Tenemos `\(k\)` periodos donde puede ocurrir el evento *terminar*: `\(t_1, t_2,\ldots,t_k\)`
+
+Tenemos una muestra de tamaño `\(N\)`, `\(N\geq k\)`
+
+En el periodo `\(t_j\)`, `\(d_j\)` es el número de eventos que terminan
+
+**Censura por la derecha**: hay eventos que terminan en algún momento entre `\(t_j\)` y `\(t_{j+1}\)`, pero solo sabemos que ocurrirá en algún momento mayor después de `\(t_j\)`
+
+Asumimos censura independiente
+
+---
+
+# Estimación no paramétrica
+
+`\(m_j\)` es el número de eventos censurados en `\([t_j,t_{j+t}]\)`
+
+`\(r_j\)` es el número de eventos en riesgo (no han fallado o sido censaurados) justo antes de `\(t_j\)`
+
+`$$r_j=\sum_{l|l\geq j}(d_l+m_l)$$`
+
+Con estos ingredientes, podemos estimar la función de riesgo `\(\hat{\lambda}=\frac{d_j}{r_j}\)`
+
+
+---
+
+# Ejemplo de cálculos no paramétricos
+
+.pull-left[
+- En el primer periodo hay
+  - 80 unidades en riesgo
+  - 4 unidades censuradas
+
+El riesgo `\(\hat{\lambda}_j\)` es simplemente el número de individuos para los que el evento termina dividido por el número de eventos en riesgo
+
+El riesgo aculumado `\(\hat{\Lambda}(t_j)\)` es la suma de riesgos hasta el periodo `\(j\)`
+
+La sobrevivencia `\(\hat{S}(t_j)\)` es la probabilidad de que el evento no haya terminado hasta `\(j\)`
+
+]
+
+.pull-right[
+| `\(j\)` | `\(r_j\)` | `\(d_j\)` | `\(m_j\)` | `\(\hat{\lambda}_j=\frac{d_j}{r_j}\)` | `\(\hat{\Lambda}(t_j)\)` | `\(\hat{S}(t_j)\)` |
+|:---:|:---:|:---:|:---:|:---:|:---:|:---:
+|1 | 80 | 6 | 4 | 6/80 | 6/80 | (1-6/80) |
+|2 | 70 | 5 | 3 | 5/70 | 6/80 + 5/70 | (1-6/80) `\(\times\)` (1-5/70)
+|3 | 62 | 2 | 1 | 2/62 | `\(\hat{\Lambda}(t_2)\)` + 2/62 | `\(\hat{S}(t_2)\,\times\)` (1-2/62) |
+|4 | `\(\ldots\)` | `\(\ldots\)` | `\(\ldots\)` | `\(\ldots\)` | `\(\ldots\)` | `\(\ldots\)`|
+
+Para el periodo 2 hay 70 unidades en riesgo pues 6 *murieron* y 4 fueron censuradas en el periodo 1
+]
+---
+
+# Ejemplo: tiempo de reincidencia
+
+Usamos los datos [data_rossi.csv](/diapositivas/data_rossi.csv) de un estudio sobre reicidencia delictiva
+
+Se estudia cuánto tiempo pasa para que alguien que salió de prisión vuelva a ser arrestado
+
+Usamos el paquete *survival* y la función *survfit* para poner nuestros datos en formato de sobrevivencia
+
+
+```r
+data.rossi &lt;- read_csv("data_rossi.csv",
+                       locale = locale(encoding = "latin1")) 
+
+km &lt;- survfit(Surv(week, arrest) ~ 1,
+              type = "kaplan-meier",
+              data=data.rossi)
+```
+
+---
+
+# Estimador de Kaplan-Meier
+
+**Estimador Kaplan-Meier de la función de sobrevivencia discreta**:
+
+`$$\hat{S}(t)=\prod_{j|t_j\leq t}(1-\hat{\lambda}_j)=\prod_{j|t_j\leq t}\left(\frac{r_j-d_j}{r_j}\right)$$`
+
+La varianza de este estimador es
+
+`$$\hat{V}(\hat{S}(t))=S(t)^2 \sum_{j|t_j\leq t}\frac{d_j}{r_j(r_j-d_j)}$$`
+
+El estimador KM es una función discreta decreciente y con saltos
+
+
+---
+
+# Ejemplo del estimador KM
+.pull-left[
+
+
+```r
+ggsurvplot(fit = km,
+           data =data.rossi,
+           conf.int = TRUE,
+           title = "Curva de Supervivencia",
+           xlab = "Semanas",
+           ylab = "Probabilidad de no ser arrestado",
+           legend.title = "Estimación",
+           legend.labs = "Kaplan-Meier",
+           ylim = c(0.65,1))
+```
+]
+.pull-right[
+
+![](figures/unnamed-chunk-4-1.png)&lt;!-- --&gt;
+]
+
+---
+
+# Estimación de Nelson-Aalen
+
+**Estimador Nelson-Aalen de la función de riesgo acumulado discreta**:
+
+`$$\hat{\Lambda}(t)=\sum_{j|t_j\leq t} \hat{\lambda}_j=\sum_{j|t_j\leq t} \frac{d_j}{r_j}$$`
+
+Y la varianza del estimador se calcula como
+
+`$$\hat{V}(\hat{\Lambda}(t))=\sum_{j|t_j\leq t}\frac{d_j}{r_j^2}$$`
+
+---
+
+# Ejemplo del estimador NA
+
+.pull-left[
+
+```r
+ggsurvplot(km,
+           fun = "cumhaz",
+           xlab = "Semanas",
+           censor = T,
+           ylab = "Riesgo Acumulado",
+           title = "Riesgo Acumulado",
+           legend.title = "Semanas sin ser arrestado")
+```
+]
+.pull-right[
+
+![](figures/unnamed-chunk-6-1.png)&lt;!-- --&gt;
+]
+
+---
+
+# Ejercicio
+
+En los datos *data_rossi.csv*, la columna **fin** indica si las personas recibieron o no ayuda financiera. ¿Qué esperaría que fuera diferente en términos de la *sobrevivencia* entre los dos grupos de personas?
+
+Construya el gráfico del estimador KM pero ahora para quienes sí recibieron ayuda financiera y quienes no. Pista: el objeto de sobrevivenvia ahora debe construirse incluyendo el argumento *Surv(week, arrest) ~ fin*
+
+---
+
+class: inverse, middle, center
+
+# Estimación paramétrica
+
+---
+
+# Estimación paramétrica
+
+Consideremos la función de densidad de la duración parametrizada con `\(\theta\)`, `\(f(t|x,\theta)\)`
+
+Supongamos que `\(x\)` no varía en el tiempo
+
+La duración observada `\(t\)` puede estar incompleta por un problema de censura
+
+La verosimilitud tendrá dos partes, una para las observaciones sin censuar y otra para las censuradas
+
+
+Para las observaciones censuradas tenemos
+
+$$
+`\begin{aligned}
+P(T&gt;t)&amp;=\int_{t=0}^{\infty}f(u|x,\theta)du \\
+&amp;=1-F(t|x,\theta) \\
+&amp;=S(t|x,\theta)
+\end{aligned}`
+$$
+
+---
+# Estimación paramétrica
+
+Definiendo
+
+`$$\delta_i=\begin{cases}1 \quad \text{sin censura} \\ 0 \quad \text{con censura}\end{cases}$$`
+
+La verosimilitud es
+
+`$$L_i=f(t_i|x_i,\theta)^{\delta_i}S(t_i|x_i,\theta)^{1-\delta_i}$$`
+
+Y la log verosimilitud es
+
+`$$\mathcal{L}(\theta)=\sum\left(\delta_i \ln f(t_i|x_i)+(1-\delta_i)\ln S(t_i|x_i,\theta)\right)$$`
+---
+
+# Estimación paramétrica
+
+Notemos que como `\(S(t)=exp\left(\Lambda(t)\right)\)`, entonces `\(\ln S(t)=\Lambda(t)\)`
+
+Además, como `\(\lambda(t)=\frac{f(t)}{S(t)}\)`, entonces `\(ln(f(t))=\ln\lambda(t)+\ln S(t)\)`
+
+Sustituyendo estos resultados en la log verosimilitud
+
+$$
+`\begin{aligned}
+\mathcal{L}(\theta)&amp;=\sum_i\left(\delta_i(\ln\lambda(t_i|x_i,\theta)+\ln S(t_i|x_i,\theta))+\ln S(t_i|x_i,\theta)-\delta_i\ln S(t_i|x_i,\theta)\right) \\
+&amp;=\sum_i\left(\delta_i \ln\lambda(t_i|x_i,\theta) + \Lambda(t_i|x_i,\theta)\right)
+\end{aligned}`
+$$
+Estimamos por MV
+
+Sabemos que si la densidad está bien planteada, obtenemos estimadores consistentes y que
+
+`$$\hat{\theta}\stackrel{a}{\sim}\mathcal{N}\left(0,\left(-E\frac{\partial^2\mathcal{L}}{\partial \theta\partial\theta'}\right)^{-1}\right)$$`
+
+---
+
+# Ejemplo Weibull
+
+Para implementar la estimación tenemos que especificar una forma funcional
+
+Asumimos `\(\lambda(t)=\gamma \alpha t^{\alpha-1}\)`, con `\(\alpha&gt;0\)` y `\(\gamma&gt;0\)`
+
+Por tanto `\(\Lambda(t)=\gamma t^{\alpha}\)` (ver CT tabla 17.4)
+
+Y entonces `\(S(t)=exp(-\Lambda(t))=exp(-\gamma t^{\alpha})\)`
+
+Parametrizamos `\(\gamma\)`, `\(\gamma=exp(x_i'\beta)\)`
+
+Con estas formas funcionales, el log de la verosimilitud no censurada `\(f(t)=\Lambda(t) S(t)\)` es:
+
+$$
+`\begin{aligned}
+f(t|x,\beta,\gamma)&amp;=\ln\left(exp(x'\beta)\alpha t^{\alpha-1} exp(-exp(x'\beta)t^{\alpha})\right) \\
+&amp;=x'\beta+\ln \alpha+(\alpha-1)\ln t -exp(x'\beta)t^{\alpha}
+\end{aligned}`
+$$
+
+
+- Y la log verosimilitud será
+
+`$$\mathcal{L}_i=\sum_i\left(\delta_i\left(x_i'\beta+\ln \alpha+(\alpha-1)\ln t -exp(x_i'\beta)t^{\alpha}\right)-(1-\delta_i)exp(x_i'\beta)t_i^{\alpha}\right)$$`
+
+---
+
+# Otras funciones de duración
+
+Podemos emplear
+
+  - Exponencial
+  
+  - Gamma
+  
+  - Log-normal
+  
+  - Weibull generalizada
+  
+  - Log-logística
+  
+Vert Tabla 17.5 en CT
+
+Weibull es muy usada porque, con dos parámetros, es suficiente flexible para modelar diversas formas de la función de riesgo
+
+---
+
+# Interpretación
+
+Una forma de interpretar los resultados de la estimación es analizando el efecto de los regresores `\(x\)` en la media condicional
+
+Con la parametrización Weibull y `\(\gamma=exp(x'\beta)\)` la duración completada esperada es
+
+$$
+`\begin{aligned}
+E(T^*|x)&amp;=exp\left(-\frac{x'\beta}{\alpha}\right)\Gamma(\alpha^{-1}+1) \\
+&amp;=exp\left(-\frac{x'\beta}{\alpha}\right)\Gamma(\alpha^{-1})/\alpha
+\end{aligned}`
+$$
+donde `\(T^*\)` indica la duración no censurada
+
+Podemos usar nuestro modelo para obtener la predicción de la duración del desempleo para un vector `\(x\)`
+
+La tabla 17.4 en CT muestra características de las distribuciones exponencial y la Weibull
+
+---
+
+# Interpretación
+
+Otra manera de interpretar los resultados es estimando el efecto de un cambio en `\(x_j\)` sobre la tasa de riesgo
+
+En el caso Weibull, la tasa de riesgo es
+
+`$$\lambda(t)=\gamma\alpha t^{\alpha-1}=exp(x'\beta)\alpha t^{\alpha-1}$$`
+Y por tanto
+
+$$
+`\begin{aligned}
+\frac{d \lambda(t)}{d x_j}&amp;=exp(x'\beta)\alpha t^{\alpha-1}\beta_j \\
+&amp;=\lambda(t)\beta_j
+\end{aligned}`
+$$
+
+
+En el caso Weibull, los cambios en los regresores tienen un efecto multiplicativo en el riesgo
+
+Si `\(\beta_j&gt;0\)`, entoces un aumento en `\(x_j\)` incrementa el riesgo y se reduce la duración
+
+---
+
+# Ejemplo
+
+.pull-left[
+
+Usamos los mismos datos para estimar un modelo Weibull del tiempo en ser nuevamente arrestado
+
+Nos interesa el efecto de recibir ayuda financiera **fin**, controlando por una serie de observables
+
+
+```r
+sweibull&lt;- survreg(Surv(week, arrest) ~ fin + age + race + wexp + mar + paro + prio,
+                data=data.rossi,
+                dist = "weibull")
+```
+]
+
+.pull-right[
+
+```
+## 
+## Call:
+## survreg(formula = Surv(week, arrest) ~ fin + age + race + wexp + 
+##     mar + paro + prio, data = data.rossi, dist = "weibull")
+##                  Value Std. Error     z       p
+## (Intercept)     4.0766     0.4928  8.27 &lt; 2e-16
+## finyes          0.2722     0.1380  1.97 0.04852
+## age             0.0407     0.0160  2.54 0.01096
+## raceother       0.2248     0.2202  1.02 0.30721
+## wexpyes         0.1066     0.1515  0.70 0.48196
+## marnot married -0.3113     0.2733 -1.14 0.25473
+## paroyes         0.0588     0.1396  0.42 0.67355
+## prio           -0.0658     0.0209 -3.14 0.00167
+## Log(scale)     -0.3391     0.0890 -3.81 0.00014
+## 
+## Scale= 0.712 
+## 
+## Weibull distribution
+## Loglik(model)= -679.9   Loglik(intercept only)= -696.6
+## 	Chisq= 33.42 on 7 degrees of freedom, p= 2.2e-05 
+## Number of Newton-Raphson Iterations: 6 
+## n= 432
+```
+]
+
+
+
+---
+
+# Ejemplo
+
+.pull-left[
+En R, para obtener los coeficientes en la misma parametrización que vimos en clase (la de CT y la más común en economía), tenemos que convertir los coeficientes producidos por *survreg* como sigue
+
+`$$\hat{\beta}_{j}=-\frac{\hat{\beta}_{j,survreg}}{\hat{\sigma}_{survreg}}$$`
+En este ejemplo, el coeficiente de la edad es negativo, lo que se interpreta como una reducción en el riesgo ante un cambio de una unidad en la edad
+
+]
+
+.pull-right[
+Usando la función *ConvertWeibull* del paquete *SurvRegCensCov* esto se hace en un solo paso
+
+
+```r
+SurvRegCensCov::ConvertWeibull(sweibull, conf.level = 0.95)
+```
+
+```
+## $vars
+##                    Estimate          SE
+## lambda          0.003272137 0.002755265
+## gamma           1.403695274 0.124966345
+## finyes         -0.382034422 0.191401535
+## age            -0.057149766 0.021984492
+## raceother      -0.315554127 0.307975363
+## wexpyes        -0.149572978 0.212326830
+## marnot married  0.436932811 0.381906391
+## paroyes        -0.082575536 0.195865820
+## prio            0.092386878 0.028735335
+## 
+## $HR
+##                       HR        LB        UB
+## finyes         0.6824716 0.4689897 0.9931294
+## age            0.9444526 0.9046216 0.9860374
+## raceother      0.7293846 0.3988481 1.3338460
+## wexpyes        0.8610756 0.5679477 1.3054920
+## marnot married 1.5479521 0.7322817 3.2721772
+## paroyes        0.9207419 0.6272153 1.3516342
+## prio           1.0967891 1.0367249 1.1603331
+## 
+## $ETR
+##                      ETR        LB        UB
+## finyes         1.3128014 1.0017645 1.7204119
+## age            1.0415540 1.0093912 1.0747415
+## raceother      1.2520753 0.8132627 1.9276583
+## wexpyes        1.1124409 0.8265803 1.4971622
+## marnot married 0.7325137 0.4287266 1.2515581
+## paroyes        1.0605920 0.8066554 1.3944683
+## prio           0.9363023 0.8986518 0.9755302
+```
+
+]
+
+---
+
+# Próxima sesión
+
+- Modelos con muestras seleccionadas
+
+---
+
+class: center, middle
+Presentación creada usando el paquete [**xaringan**](https://github.com/yihui/xaringan) en R.
+
+El *chakra* viene de [remark.js](https://remarkjs.com), [**knitr**](http://yihui.org/knitr), y [R Markdown](https://rmarkdown.rstudio.com).
+
+Material de clase en versión preliminar.
+
+**No reproducir, no distribuir, no citar.**
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="https://platform.twitter.com/widgets.js"></script>
+<script src="libs/cols_macro.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9",
+"navigation": {
+"scroll": false
+}
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
