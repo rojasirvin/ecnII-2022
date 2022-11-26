@@ -1,56 +1,49 @@
 ---
 title: "Regresión cuantil"
 author: "Irvin Rojas"
-institute: "CIDE"
-mathspec: true
 header-includes:
-  - \usepackage{amsmath}
+  - \usepackage{tikz}
+  - \usetikzlibrary{shapes, shadows,arrows}
+  - \usepackage{amsmath} 
+  - \usepackage[utf8]{inputenc}
 output:
   xaringan::moon_reader:
+    css: [default, "libs/cide.css", metropolis-fonts, "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap-grid.min.css", "https://use.fontawesome.com/releases/v5.7.2/css/all.css", "https://cdn.rawgit.com/jpswalsh/academicons/master/css/academicons.min.css"]
     seal: false
     chakra: "https://remarkjs.com/downloads/remark-latest.min.js"
     lib_dir: libs
     nature:
+      highlightStyle: github
       highlightLines: true
       countIncrementalSlides: false
       titleSlideClass: ["middle", "center"]
       ratio: "16:9"
       beforeInit: ["https://platform.twitter.com/widgets.js", "libs/cols_macro.js"]
       navigation:
-      scroll: false
-    css: [default, "libs/cide.css", metropolis-fonts, "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap-grid.min.css", "https://use.fontawesome.com/releases/v5.7.2/css/all.css", "https://cdn.rawgit.com/jpswalsh/academicons/master/css/academicons.min.css"]
-include-before:
-- '\newcommand\myeq{\stackrel{\mathclap{\normalfont\mbox{s}}}{~}}'
-
+        scroll: false
 ---
+
 class: title-slide
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, fig.path = "figures/")
-
+knitr::opts_chunk$set(echo = FALSE,
+                      warning = F,
+                      message = F, fig.path = "figures/")
 library(tidyverse)
-library(pacman)
-library(janitor)
+library(magick)
+library(reticulate)
 library(sandwich)
-library(modelsummary)
-#library(nnet)
-#library(mlogit)
+library(stargazer)
+library(foreign)
+library(AER)
+library(clubSandwich)
 library(quantreg)
+
 
 xfun::pkg_load2(c('base64enc', 'htmltools', 'mime'))
 
+knitr::opts_knit$set(root.dir = "C:/Users/rojas/Dropbox/presentations_sites/ecn_ciestaam2022")
 ```
-
-```{css, echo = FALSE}
-.huge .remark-code { /*Change made here*/
-  font-size: 200% !important;
-}
-.tiny .remark-code { /*Change made here*/
-  font-size: 60% !important;
-}
-
-```
-
 
 .title[
 # Regresión cuantil
@@ -104,7 +97,7 @@ donde $F_y$ es la función de distribución acumulada de $y$
   
   - $q=0.75$ es el cuartil superior
 
-- Por ejemplo, si $y$ es el salario mensual y $\mu_{0.75}=6,000$, entonces el 75% de los individuos tiene un salario menor o igual que 6,000
+- Por ejemplo, si $y$ es el salario mensual y $\mu_{0.75}=6,000$, entonces la probabilidad de que $y\leq 6,000$ es 0.75 (75% de los individuos tiene un salario menor o igual que 6,000)
 
 
 ---
@@ -113,7 +106,9 @@ donde $F_y$ es la función de distribución acumulada de $y$
 
 - Consideremos ahora la regresión de $y$ dado $x$
 
-- El cuantil poblacional $q$ es la función $\mu_q(x)$ tal que $y$ condicional en $x$ es menor o igual que $\mu_q(x)$
+- El cuantil poblacional $q$ de $y$ dado $x$ es la función $\mu_q(x)$ tal que $y$ condicional en $x$ es menor o igual que $\mu_q(x)$ con probabilidad $q$
+
+- Análogamente
 
 $$\mu_q(x)=F^{-1}_{y|x}(q)$$
 
@@ -127,13 +122,12 @@ donde $F_{y|x}$ es la cdf de $y$ dado $x$
 
   1. Ordenamos la muestra en orden ascendente
   
-  1. $\hat{\mu}_q$ será la $int(Nq)$ésima observación
+  1. $\hat{\mu}_q$ será la $[Nq]$ésima observación más pequeña, donde $[X]$ significa *redondear al siguiente entero*
 
-- Por ejemplo, si $N=97$ y buscamos el cuartil inferior, $p=0.25$
+- Por ejemplo, si $N=97$ y buscamos el cuartil inferior, $q=0.25$
 
-  - $\hat{\mu}_{0.25}$ es el valor de $y$ de la observación $int(24.25)=25$
+  - $\hat{\mu}_{0.25}$ es el valor de $y$ de la observación 25 porque $[97*0.25]=[24.25]=25$
   
-
 - Kroenker & Bassett (1978) mostraron que $\hat{\mu}_q$ puede ser estimado como la solución al siguiente problema de minimización
 
 $$\hat{\mu}_q=\arg\min_{\beta} \sum_{i|y_i\geq \beta}^N q|y_i-\beta|+\sum_{i|y_i <\beta}^N(1-q)|y_i-\beta|$$
@@ -162,7 +156,7 @@ $$\hat{\beta}_q=\arg\min_{\beta_q} \sum_{i|y_i\geq x_i'\beta}^N q|y_i-x_i'\beta_
 
 - Regresión en la mediana minimiza $\sum_i |e_i|$
 
-- En el caso de regresión en la mediana, el problema es encontrar $\hat{\beta}_0.5$ que minimiza
+- En el caso de regresión en la mediana, el problema es encontrar $\hat{\beta}_{0.5}$ que minimiza
 
 $$\sum_i |y_i-x_i'\beta| $$
 
@@ -182,13 +176,14 @@ $$\sum_i |y_i-x_i'\beta| $$
 
 $$\sqrt{N}(\hat{\beta}_q-\beta_q)\stackrel{d}{\sim}\mathcal{N}\left(0,A^{-1}BA^{-1}\right)$$
 con $$A=p\lim\frac{1}{N}\sum_i f_{u_q}(0|x_i)x_ix_i' \\ B=p\lim\frac{1}{N}\sum_i q(1-q)x_ix_i'$$
+
 - $f_{u_q}(0|x)$ es la densidad condicional del término de error, $u_q=y-x'\beta_q$
 
 ---
 
 # Ejemplo
 
-- Usamos los datos en [vietnam_hogares.csv](/diapositivas/vietnam_hogares.csv)
+- Usamos los datos en [vietnam_hogares.csv](\diapositivas\vietnam_hogares.csv)
 
 - Datos de una encuesta levantada en Vietnam en 1997 (tipo ENIGH)
 
@@ -209,7 +204,7 @@ con $$A=p\lim\frac{1}{N}\sum_i f_{u_q}(0|x_i)x_ix_i' \\ B=p\lim\frac{1}{N}\sum_i
 .pull-left[
 ```{r echo=T, include=T, eval=T, results=T, message=F, warning=F}
 
-data.wb<-read_csv("./vietnam_hogares.csv",
+data.wb<-read_csv("data/vietnam_hogares.csv",
                         locale = locale(encoding = "latin1")) %>% 
   filter(!is.na(lhhex12m)) %>% 
   rename(lnmed=lhhex12m, lntotal=lhhexp1)
@@ -229,7 +224,7 @@ summary(r.mco <- lm(lnmed  ~ lntotal, data=data.wb))
 ---
 # Ejemplo
 
-- Estimemos la regresión cuantil en el cuantil 90
+- Estimemos la regresión cuantil en el cuantil 90, es decir, estimemos $\hat{\beta}_{90}$
 
 ```{r echo=T, include=T, eval=T, results=T, message=F, warning=F}
 summary(r.q90 <- rq(lnmed  ~ lntotal, data=data.wb, tau=0.9))
@@ -247,10 +242,11 @@ summary(r.q90 <- rq(lnmed  ~ lntotal, data=data.wb, tau=0.9))
 - Gráficamente
 
 ```{r echo=T, include=T, eval=T, results=T, message=F, warning=F}
-g1 <- ggplot(data.wb, aes(x=lntotal,y=lnmed)) + geom_point() + 
+g1 <- data.wb %>% 
+  ggplot(aes(x=lntotal,y=lnmed)) + 
+  geom_point(alpha=0.3, size=.1) + 
   geom_abline(intercept=coef(r.q90)[1], slope=coef(r.q90)[2], color="black", linetype="dashed")+
   geom_abline(intercept=coef(r.mco)[1], slope=coef(r.mco)[2], color="red")
-
 ```
 ]
 
@@ -290,7 +286,78 @@ coef(r.q1_9)
 
 .pull-right[
 ```{r out.width="80%", echo=T, include=T, eval=T, results=T, message=F, warning=F}
-plot(summary(r.q1_9), parm="lntotal", ylab="log del gasto total")
+plot(summary(r.q1_9),
+     mar = c(5.1, 4.1, 2.1, 2.1), 
+     parm="lntotal", 
+     main = "Coeficientes de regresión cuantil",
+     ylab="Coeficiente de lntotal",
+     xlab="Cuantil")
+```
+]
+
+---
+
+# Interpretación
+
+En nuestro ejemplo, cuando estimamos el coeficiente de regresión cuantil con $\hat{\beta}_{90}$, interpretamos que cuando el ingreso cambia en 1% en hogares en el percentil 90 de la distriubción condicional del (log) gasto en medicamentos, entonces el gasto en medicamentos se incrementa 0.8%
+
+Un incremento de 1% del ingreso tiene un efecto más grande en el gasto en medicamentos en hogares más ricos que en hogares más pobres (porque $\hat{\beta}_q$ va creciendo conforme $q$ crece)
+
+---
+
+# Interpretación incorrecta
+
+El coeficiente de regresión cuantil con $\hat{\beta}_{90}$ **no dice** que un incremento en el salario incrementa el gasto en medicamentos en el 10% de hogares más ricos en 0.8%
+
+**Tampoco** dice que un incremento en el salario incrementa el gasto en medicamenos en el 10% de hogares con más gasto en medicamentos en 0.8%
+
+Lo anterior equivaldría a quedarnos con un subconjunto de la muestra de hogares (el 10% más rico o el 10% con más gasto en medicamentos)
+
+Cuando usamos regresión cuantil usamos **toda** la muestra para estimar los coeficientes para el $q$ elegido
+
+---
+
+# Interpretación
+
+.pull-left[
+Regresión cuantil le pasa un línea al gráfico de puntos de tal manera que los valores del gasto en medicamentos tengan una probabilidad $q$ de esstar arriba de dicha línea **para cada valor** del ingreso
+
+El 90% de los puntos están debajo de la recta con pendiente $\hat{\beta}_{90}$
+
+$\hat{\beta}_{90}$ indica cómo afecta un incremento en el ingreso al gasto en medicamentos de hogares tienen un alto gasto en medicamentos relativo a otros hogares, para un nivel dado de ingreso
+]
+
+.pull-right[
+```{r echo=F}
+data.wb %>% 
+  ggplot(aes(x=lntotal,y=lnmed)) + 
+  geom_point(alpha=0.3, size=.1) + 
+  geom_abline(intercept=coef(r.q90)[1], slope=coef(r.q90)[2], color="black", linetype="dashed")
+```
+]
+
+
+---
+
+# Cuantiles vs percentiles
+
+.pull-left[
+
+[Leeds (2014)](https://www.researchgate.net/publication/281764022_Quantile_Regression_for_Sports_Economics?_iepl%5BgeneralViewId%5D=sKkaCuHYNzrCrfkfhPJW82MeqZfZegD1non1&_iepl%5Bcontexts%5D%5B0%5D=searchReact&_iepl%5BviewId%5D=AbSsMt0q9B1B5DIqHv5G6lpomp66SLQg2V1R&_iepl%5BsearchType%5D=publication&_iepl%5Bdata%5D%5BcountLessEqual20%5D=1&_iepl%5Bdata%5D%5BinteractedWithPosition1%5D=1&_iepl%5Bdata%5D%5BwithoutEnrichment%5D=1&_iepl%5Bposition%5D=1&_iepl%5BrgKey%5D=PB%3A281764022&_iepl%5BtargetEntityId%5D=PB%3A281764022&_iepl%5BinteractionType%5D=publicationTitle) hace la distinción entre cuantiles y percentiles
+
+Se enfoca en la relación entre salarios y goles en jugadores de hockey
+
+La línea que marca el cuantil con $q=0.9$ pasa por la cola superior de las dos distribuciones
+
+El cuantil 90 puede corresponder a jugadores de salario bajo
+
+La línea del percentil 90 muestra el salario por arriba del cual se encuentra el 10% de los jugadores mejor pagados
+
+]
+
+.pull-right[
+```{r out.height=500, fig.cap='Fuente: Leeds (2014)', fig.align='center'}
+knitr::include_graphics("../slides/figures/quantile_goals.png", error=F)
 ```
 ]
 
@@ -312,7 +379,6 @@ plot(summary(r.q1_9), parm="lntotal", ylab="log del gasto total")
 ---
 
 class: center, middle
-
 Presentación creada usando el paquete [**xaringan**](https://github.com/yihui/xaringan) en R.
 
 El *chakra* viene de [remark.js](https://remarkjs.com), [**knitr**](http://yihui.org/knitr), y [R Markdown](https://rmarkdown.rstudio.com).
