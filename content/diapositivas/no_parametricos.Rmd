@@ -117,7 +117,7 @@ $$\hat{f}_{hist}(x_0)=\frac{1}{N}\sum_i\frac{\mathbf{1}(x_0-h<x_i<x_0+h)}{2h}$$
 - Este peso igual queda claro al reescribir el histograma como
 
 $$\hat{f}_{hist}(x_0)=\frac{1}{Nh}\sum_i\frac{1}{2}\mathbf{1}\left(\Bigg|\frac{x_i-x_0}{h}\Bigg|<1\right)$$
-- Usemos datos sobre salarios ([salarios.csv]((/diapositivas/salarios.csv)) de 175 mujeres para ejemplificar la construcción del histograma 
+- Usemos datos sobre salarios de 175 mujeres usados en CT: [salarios.csv](/diapositivas/salarios.csv)
 
 - Usamos 20 ventanas
 
