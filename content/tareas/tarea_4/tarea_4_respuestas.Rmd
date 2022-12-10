@@ -1,0 +1,194 @@
+---
+title: "Respuestas a la tarea 4"
+weight: 1
+type: book
+toc: false
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(quantreg)
+library(survival)
+library(survminer)  #graficar curva de supervivencia estimada con ggsurvplot()
+library(SurvRegCensCov) #contiene la transformación de los resultados Weibull usando ConvertWeibull
+library(plm)
+library(stargazer)
+
+knitr::opts_chunk$set(collapse = TRUE)
+```
+
+# Pregunta 1
+
+Considere los datos en *MunichRent.rda*. Estos archivos contienen información sobre rentas en la ciudad de Munich, **rent**. Se desea modelar la renta en función de la antiguedad de los edificios en renta (debe crear la variable **antiguedad**), controlando por el área, **area**. También se desea controlar por el tipo de baño y cocina que tiene el edificio, usando efectos fijos de las variables **bath** y **kitchen**. La variable **yearc** indica cuándo fue construido el edificio. Para leer los datos basta con ejecutar lo siguiente:
+
+```{r eval=F,ech=T,results=F}
+load("./MunichRent.rda")
+```
+a. [15 puntos] Estime la densidad Kernel de las rentas por metro cuadrado, **rentsqm**, usando un Kernel Epanechnikov. Use el estimador *plug-in* de Silverman para estimar el ancho de ventana óptimo.
+
+    *Simplemente seguimos el procedimiento que vimos en clase para obtener $h$*.
+
+    ```{r eval=T, include=T, echo=T, message=F}
+load("MunichRent.rda")
+
+rentsqm.sd <- sd(MunichRent$rentsqm)
+rentsqm.iqr.adj <- IQR(MunichRent$rentsqm)/1.349
+rentsqm.N <- nrow(MunichRent)
+constante <- 1.3643
+ajuste <- min(rentsqm.sd,rentsqm.iqr.adj)
+
+delta <- 1.7188
+h <- constante*delta*ajuste*rentsqm.N^(-0.2) 
+```
+    *Ahora hacemos el gráfico alimentando el valor de $h$:*
+    
+    ```{r eval=T, include=T, echo=T, message=F}
+MunichRent %>% 
+  ggplot(aes(x=rentsqm)) +
+  geom_histogram(aes(y=..density..), bins=20, fill="#69b3a2", color="#e9ecef", alpha=0.9)+
+  geom_density(aes(x=rentsqm, color='Óptimo'), kernel="epanechnikov", bw=h/2, adjust=1)
+    ```
+
+a. [20 puntos] Estime por MCO la relación entre la renta por metro cuadrado, **rentsqm** y la antiguedad del edificio, controlando por efectos fijos de **bath** y **kitchen**. Estime la misma relación, pero con una regresión mediana. Interprete los coeficientes sobre la antiguedad en ambos casos.
+
+    *Por MCO obtenemos una relación geativa entre la renta por metro cuadrado y la antiguedad. Un año más de antiguedad se asocia con una reducción de la renta de 0.041 unidades monetarias por metro cuadrado:*
+
+    ```{r eval=T, include=T, echo=T, message=T}
+MunichRent <- MunichRent %>% 
+  mutate(antiguedad=2020-yearc)
+
+#Por MCO
+summary(r.mco <- lm(rentsqm  ~ antiguedad+factor(bath)+factor(kitchen),
+                    data=MunichRent))
+```
+
+    *Ahora realizamos un modelo LAD. La asociación negativa se sostiente. En la mediana de la distribución condicional de rentas por metro cuadrado, un año más de antiguedad se asocia con 0.05 unidades monetarias menos de renta.*
+
+    ```{r eval=T, include=T, echo=T, message=T}
+summary(r.q50 <- rq(rentsqm  ~ antiguedad+factor(bath)+factor(kitchen),
+                    data=MunichRent,
+                    tau=0.5))
+```
+
+a. [15 puntos] Estime ahora una regresión cuantil para cada uno de los deciles de la distribución de la renta y represente en una gráfica los coeficientes por regresión cuantil junto con el coeficiente de MCO para la variable **antiguedad**. ¿Concluye que vale la pena modelar la relación de las rentas en función del área y la antiguedad usando regresión cuantil?
+
+    *Regresión cuantil para cada decil:*
+
+    ```{r eval=T, include=T, echo=T, message=T}
+r.q1_9 <- rq(rentsqm  ~ antiguedad+factor(bath)+factor(kitchen),
+                    data=MunichRent,
+                    tau= 1:9/10)
+
+plot(summary(r.q1_9), parm=c("antiguedad"))
+
+```
+
+
+    *El gráfico nos releva una forma interesante en la relación entre la renta por metro cuadrado y la renta. En los deciles por debajo de la mediana, la relación entre el precio y la renta se hace más negativa hasta llegar al punto más negativo, cerca de la mediana. Luego, conforme nos movemos a la parte superior de la distribución condicional de rentas, la relación se vuelve menos fuerte (se acerca al cero). Esto puede reflejar el hecho de que, entre las casas más caras por metro cuadrado, se encuentren casas antiguas, valoradas más por el hecho de ser viejas.*
+    
+    *El uso de regresión cuantil nos ayudó a descubrir estos patrones.*
+
+
+# Pregunta 2
+
+Los datos en *rossi_arrestos.csv* contienen información de 432 personas que fueron arrestadas en algún momento de sus vidas y luego puestas en libertad. A estas personas se les siguió durante 52 semanas para estudiar el tiempo que transcurrió hasta que reincidieron en cometer un delito y fueron arrestadas nuevamente. **week** indica cuántas semanas pasaron desde que fueron liberados hasta ser de nuevo arrestados y la variable **arrest** indica el evento de ser arrestado. Un programa público consistió en darle ayuda financiera a un grupo seleccionado al azar e identificado por **fin**. Las variables de control para el análisis son la edad (**age**), indicadoras de raza  (**race**), la experiencia laboral (**wexp**), indicadoras de estado civil (**mar**), una indicadora de si la liberación fue por perdón (**paro**), y el número de arrestos previos (**prio**).
+
+a. [10 puntos] Represente la función de sobrevivencia no paramétrica de Kaplan-Meier.
+
+    *Construimos un objeto de sobrevivencia con la función survfit. Luego podemos usar ggsurvplot:*
+
+    ```{r eval=T, include=T, echo=T, message=T}
+    data.rossi <- read_csv("./data_rossi.csv",
+                  locale = locale(encoding = "latin1")) 
+    
+    #KM
+    km <- survfit(Surv(week, arrest) ~ 1,
+                     type = "kaplan-meier",
+                     data=data.rossi)
+    
+    ggsurvplot(fit = km,
+               data =data.rossi,
+               conf.int = TRUE,
+               title = "Curva de Supervivencia",
+               xlab = "Semanas",
+               ylab = "Probabilidad de no ser arrestado",
+               legend.title = "Estimación",
+               legend.labs = "Kaplan-Meier",
+               ylim = c(0.65,1))
+    
+    ```
+
+
+a. [10 puntos] Represente la función de riesgo acumulado no paramétrica de Nelson-Aalen.
+    
+    *Con el mismo objeto de sobrevivencia, usamos ggsurplot y la opción cumhaz:*
+    
+    ```{r eval=T, include=T, echo=T, message=T}
+    #Riesgo acumulado
+    ggsurvplot(km,
+               fun = "cumhaz",
+               xlab = "Semanas",
+               censor = T,
+               ylab = "Riesgo Acumulado",
+               title = "Riesgo Acumulado",
+               legend.title = "Semanas sin ser arrestado")
+    ```
+    
+  
+    
+a. [15 puntos] Represente nuevamente la función de sobrevivencia no paramétrica de Kaplan-Meier, pero ahora distinguiendo entre quienes recibieron y no recibieron ayuda del programa. ¿Qué observa?
+
+    *Construimos primero el objeto de sobrevivencia por grupos de la variable fin. Luego procedemos exactamente igual:*
+
+    ```{r eval=T, include=T, echo=T, message=T}
+    km.t <- survfit(Surv(week, arrest) ~ fin,
+                     type = "kaplan-meier",
+                     data=data.rossi)
+    
+    ggsurvplot(fit = km.t,
+               data =data.rossi,
+               conf.int = TRUE,
+               title = "Curva de Supervivencia",
+               xlab = "Semanas",
+               ylab = "Probabilidad de no ser arrestado",
+               legend.title = "Estimación",
+               ylim = c(0.65,1))
+    ```
+    
+    *Parece ser que los individuos que recibieron ayuda financiera tienen una mayor probabilidad de no volver a ser arrestado (la curva verde está por encima de la roja). Aunque los intervalos de confianza se traslapan.*
+
+a. [15 puntos] Estime ahora un modelo paramátrico de duración asumiendo una distribución Weibull. ¿Cómo cambia la tasa de riesgo cuando la edad se incrementa en un año?
+
+    **Muy importante antes de que interprete los coeficientes**: note que en el paquete *survival* usa una parametrización de la distribución Weibull diferente a la que se presenta en Cameron y Trivedi (2005) y otros textos de economía. En particular, en clase vimos que con la parametrización Weibull, las funciones de riesgo y sobrevivencia son:
+
+    $$\lambda(t)=\gamma \alpha t^{\alpha-1}$$
+
+    $$S(t)=exp(-\Lambda(t))=exp(-\gamma t^{\alpha})$$
+
+    A $\alpha$ se le conoce como parámetro de escala, mientras que $\gamma$ es la media. En cambio, en el paquete *survival* el parámetro de escala es $\sigma=\frac{1}{\alpha}$, y se hace $\mu/\sigma=-\ln \gamma$. Por tanto, 
+
+    $$\lambda^*(t)=exp\left(-\frac{\mu}{\sigma}\right) \frac{1}{\sigma} t^{\frac{1}{\sigma}-1}$$
+    $$S^*(t)=exp\left(-exp\left(-\frac{\mu}{\sigma}\right)t^{\frac{1}{\sigma}}\right)$$
+    Esto implica que tenemos que *traducir* nuestros coeficientes estimados a la parametrización más natural, como en Cameron y Trivedi (2005), para poderlos interpretar. Basta entonces con calcular:
+
+    $$\hat{\beta}_j=-\frac{\hat{\beta}_j^*}{\hat{\sigma}}$$
+    donde $\hat{\beta}_j^*$ es el coeficiente estimado con *survival* y $\hat{\beta}_j$ es su contraparte asociada a la parametrización Weibull de Cameron y Trivedi (2005). Noten que $\hat{\sigma}$ es lo que la salida de la función *survreg* llama *Scale*. Podría hacer la transformación a mano, sin embargo, nos interesan también los errores estándar.
+
+    Para hacer más práctica la transformación de los coeficientes Weibull use la función *ConvertWeibull* del paquete *SurvRegCensCov*. Esta función convierte los coeficientes a la parametrizaición Weibull más usada en economía, como la presentan Cameron y Trivedi (2005), y emplea el método delta para construir los errores estándar e intervalos de confianza. Ahora sí, puede interpretar los coeficientes de la regresión Weibull.
+    
+
+    *Estimamos la regresión Weibull y luego convertimos los coeficientes estimados a la parametrización vista en clase:*
+
+    ```{r eval=T, include=T, echo=T, message=T}
+    sreg <- survreg(Surv(week, arrest) ~ fin + age + race + wexp + mar + paro + prio,
+                    data=data.rossi,
+                    dist = "weibull")
+    
+    ConvertWeibull(sreg, conf.level = 0.95)
+    ```
+    
+    *Con la conversión, tenemos los efectos estimados con la parametrización vista en clase. Entonces sabemos que:*
+    
+    $$\frac{d \lambda(t)}{d\enspace edad}=\lambda(t)\beta_{edad}$$
+    
+    *Es decir, en el modelo Weibull, los coeficientes tienen una interpretación de multiplicador del riesgo. En este caso, un año más de edad reduce el riesgo e incrementa la duración.*
